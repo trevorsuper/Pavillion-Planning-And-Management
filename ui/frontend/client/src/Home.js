@@ -11,11 +11,9 @@ const images = [
   'images/jeanne-stine-community-park.jpg',
 ];
 
-function App() {
+const Home = () => {
   const [index, setIndex] = useState(0);
-  const [message, setMessage] = useState('');
 
-  // Carousel logic
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length);
@@ -23,23 +21,16 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // API call to backend
-  useEffect(() => {
-    fetch('http://localhost:5000/api/hello')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message));
-  }, []);
-
   return (
     <div>
       <header className="header">
         <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
         <nav>
-          <a href="book.js">Book Now!</a>
+          <a href="#book">Book Now!</a>
           <a href="#events">Community Park Events</a>
           <a href="#explore">Explore the Parks</a>
           <a href="#faq">FAQ</a>
-          <a href="#contact">Contact us</a>
+          <a href="#contact">Contact an employee</a>
           <a href="#login">Sign up/Login</a>
         </nav>
         <div className="socials">
@@ -62,13 +53,8 @@ function App() {
           ))}
         </div>
       </section>
-
-      <section style={{ padding: '20px', textAlign: 'center', fontSize: '1.25rem' }}>
-        <strong>Server Message:</strong> {message}
-      </section>
     </div>
   );
-}
+};
 
-export default App;
-
+export default Home;
