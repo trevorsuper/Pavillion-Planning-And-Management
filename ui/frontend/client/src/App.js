@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Explore from './html/Explore.js';
 import Contact from './html/Contact.js';
 import Home from './html/Home.js';
 
@@ -15,10 +16,12 @@ function App() {
 
   const renderPage = () => {
     switch(currentPage) {
-      case 'Contact':
-        return <Contact />;
       case 'Home':
         return <Home />;
+      case 'Explore':
+        return <Explore />;
+      case 'Contact':
+        return <Contact />;
       default:  /* If on an unknown page, display this */
         return (
         <div>
@@ -47,10 +50,6 @@ function App() {
       </ul>
     </nav>
   </header>
-  
-  <main>
-    <image src="" alt="Image carousel of different parks in Troy."></image>
-  </main>
 
 
   {renderPage()}
