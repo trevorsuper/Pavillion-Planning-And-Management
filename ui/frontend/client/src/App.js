@@ -39,7 +39,7 @@ function App() {
           <Link to="/book">Book Now!</Link>
           <Link to="/events">Community Park Events</Link>
           <Link to="/explore">Explore the Parks</Link>
-          <Link to="/faq">FAQ</Link> {}
+          <Link to="/faq">FAQ</Link>
           <Link to="/contact">Contact us</Link>
           <Link to="/login">Sign up/Login</Link>
         </nav>
@@ -76,7 +76,7 @@ function App() {
           }
         />
         <Route path="/events" element={<ParkEvents />} />
-        <Route path="/faq" element={<FAQ />} /> {}
+        <Route path="/faq" element={<FAQ />} />
       </Routes>
     </Router>
   );
