@@ -1,61 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import Contact from './html/Contact.js';
-import Home from './html/Home.js';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import './Home.css';
+import ParkEvents from './ParkEvents';
+import FAQ from './FAQ';
+
+const images = [
+  'images/boulan-park.jpg',
+  'images/brinston-park.jpg',
+  'images/firefighters-park.jpg',
+  'images/jaycee-park.jpg',
+  'images/milverton-park.jpg',
+  'images/raintree-park.jpg',
+  'images/jeanne-stine-community-park.jpg',
+];
 
 function App() {
+  const [index, setIndex] = useState(0);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/hello')
-      .then(res => res.json())
-      .then(data => setMessage(data.message));
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
-  const [currentPage, setCurrentPage] = useState('Home');
+  useEffect(() => {
+    fetch('http://localhost:5000/api/hello')
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message));
+  }, []);
 
-  const renderPage = () => {
-    switch(currentPage) {
-      case 'Contact':
-        return <Contact />;
-      case 'Home':
-        return <Home />;
-      default:  /* If on an unknown page, display this */
-        return (
-        <div>
-          <h1>404 Not Found</h1>
+  return (
+    <Router>
+      <header className="header">
+        <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
+        <nav>
+          <Link to="/book">Book Now!</Link>
+          <Link to="/events">Community Park Events</Link>
+          <Link to="/explore">Explore the Parks</Link>
+          <Link to="/faq">FAQ</Link>
+          <Link to="/contact">Contact us</Link>
+          <Link to="/login">Sign up/Login</Link>
+        </nav>
+        <div className="socials">
+          <img src="images/facebook-icon.png" alt="Facebook" />
+          <img src="images/twitter-icon.png" alt="Twitter" />
+          <img src="images/instagram-icon.png" alt="Instagram" />
+          <img src="images/youtube-icon.png" alt="YouTube" />
         </div>
-        );
-    }
-  };
+      </header>
 
-  return <div>{/*{message}*/}
-  <header>
-    <image src="" href="#Home" alt="Logo for the city of Troy, Michigan." onClick={(e) => { e.preventDefault(); setCurrentPage('Home'); }}></image>
-    <nav class="nav">
-      <ul>
-        <li><a href="#Book"  onClick={(e) => { e.preventDefault(); setCurrentPage('Book'); }}>Book Now!</a></li>
-        <li><a href="#Events"  onClick={(e) => { e.preventDefault(); setCurrentPage('Events'); }}>Community Park Events</a></li>
-        <li><a href="#Explore" onClick={(e) => { e.preventDefault(); setCurrentPage('Explore'); }}>Explore the Parks</a></li>
-        <li><a href="#FAQ" onClick={(e) => { e.preventDefault(); setCurrentPage('FAQ'); }}>FAQ</a></li>
-        <li><a href="#Contact" onClick={(e) => { e.preventDefault(); setCurrentPage('Contact'); }}>Contact Us</a></li>
-        <li><a href="#Login" onClick={(e) => { e.preventDefault(); setCurrentPage('Login'); }}>Login</a></li>
-        <li><a href="https://www.facebook.com/TroyMI/">Facebook</a></li>
-        <li><a href="https://x.com/CityTroyMI">Twitter</a></li>
-        <li><a href="https://www.instagram.com/troymichigan/">Instagram</a></li>
-        <li><a href="https://www.youtube.com/c/TroyMichiganGov/videos">Youtube</a></li>
-        <li><a href="https://nextdoor.com/city/troy--mi/">Nextdoor</a></li>
-      </ul>
-    </nav>
-  </header>
-  
-  <main>
-    <image src="" alt="Image carousel of different parks in Troy."></image>
-  </main>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <section className="hero">
+                <div className="carousel">
+                  {images.map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`Slide ${i}`}
+                      className={i === index ? 'active' : ''}
+                    />
+                  ))}
+                </div>
+              </section>
 
-
-  {renderPage()}
-
-  </div>;
+              <section style={{ padding: '20px', textAlign: 'center', fontSize: '1.25rem' }}>
+                <strong>Server Message:</strong> {message}
+              </section>
+            </>
+          }
+        />
+        <Route path="/events" element={<ParkEvents />} />
+        <Route path="/faq" element={<FAQ />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
