@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './Home.css';
-import ParkEvents from './ParkEvents';
-import FAQ from './FAQ';
+import './css/Home.css';
+import Contact from './html/Contact.js';
+import Explore from './html/Explore.js';
+import ParkEvents from './html/ParkEvents.js';
+import FAQ from './html/FAQ.js';
 
 const images = [
   'images/boulan-park.jpg',
@@ -76,6 +78,8 @@ function App() {
           }
         />
         <Route path="/events" element={<ParkEvents />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQ />} />
       </Routes>
     </Router>
