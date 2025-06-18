@@ -1,5 +1,5 @@
 import React from 'react';
-import './ParkEvents.css';
+import '../css/ParkEvents.css';
 
 const events = [
   {

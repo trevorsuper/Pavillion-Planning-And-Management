@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './FAQ.css';
+import '../css/FAQ.css';
 import { Link } from 'react-router-dom';
 
 const faqs = [
