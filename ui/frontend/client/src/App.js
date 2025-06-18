@@ -5,6 +5,8 @@ import Contact from './html/Contact.js';
 import Explore from './html/Explore.js';
 import ParkEvents from './html/ParkEvents.js';
 import FAQ from './html/FAQ.js';
+import Book from './html/book.js';
+import Login from './html/login.js';
 
 const images = [
   'images/boulan-park.jpg',
@@ -81,6 +83,8 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/book" element={<Book />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
