@@ -36,7 +36,7 @@ function App() {
   return (
     <Router>
       <header className="header">
-        <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
+        <Link to="/home"><img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" /></Link>
         <nav>
           <Link to="/book">Book Now!</Link>
           <Link to="/events">Community Park Events</Link>
