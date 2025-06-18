@@ -1,0 +1,45 @@
+.events-container {
+  padding: 2rem;
+  background-color: #f7f7f7;
+  min-height: 100vh;
+}
+
+.events-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.event-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-card h2 {
+  margin-bottom: 0.5rem;
+}
+
+.register-btn {
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.register-btn:hover {
+  background-color: #003f88;
+}

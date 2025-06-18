@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './Home.css';
+import ParkEvents from './ParkEvents';
+import FAQ from './FAQ';
 
 const images = [
   'images/boulan-park.jpg',
@@ -15,7 +18,6 @@ function App() {
   const [index, setIndex] = useState(0);
   const [message, setMessage] = useState('');
 
-  // Carousel logic
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length);
@@ -23,7 +25,6 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // API call to backend
   useEffect(() => {
     fetch('http://localhost:5000/api/hello')
       .then((res) => res.json())
@@ -31,16 +32,16 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <Router>
       <header className="header">
         <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
         <nav>
-          <a href="book.js">Book Now!</a>
-          <a href="#events">Community Park Events</a>
-          <a href="#explore">Explore the Parks</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Contact us</a>
-          <a href="#login">Sign up/Login</a>
+          <Link to="/book">Book Now!</Link>
+          <Link to="/events">Community Park Events</Link>
+          <Link to="/explore">Explore the Parks</Link>
+          <Link to="/faq">FAQ</Link> {}
+          <Link to="/contact">Contact us</Link>
+          <Link to="/login">Sign up/Login</Link>
         </nav>
         <div className="socials">
           <img src="images/facebook-icon.png" alt="Facebook" />
@@ -50,25 +51,35 @@ function App() {
         </div>
       </header>
 
-      <section className="hero">
-        <div className="carousel">
-          {images.map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt={`Slide ${i}`}
-              className={i === index ? 'active' : ''}
-            />
-          ))}
-        </div>
-      </section>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <section className="hero">
+                <div className="carousel">
+                  {images.map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`Slide ${i}`}
+                      className={i === index ? 'active' : ''}
+                    />
+                  ))}
+                </div>
+              </section>
 
-      <section style={{ padding: '20px', textAlign: 'center', fontSize: '1.25rem' }}>
-        <strong>Server Message:</strong> {message}
-      </section>
-    </div>
+              <section style={{ padding: '20px', textAlign: 'center', fontSize: '1.25rem' }}>
+                <strong>Server Message:</strong> {message}
+              </section>
+            </>
+          }
+        />
+        <Route path="/events" element={<ParkEvents />} />
+        <Route path="/faq" element={<FAQ />} /> {}
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
-
