@@ -17,13 +17,8 @@ namespace PPM.Models
 
         [ForeignKey("Event")]
         public int event_id  { get; set; }
-
-        [StringLength(50)]
-        public string requested_park { get; set; } = string.Empty; //Change to type Park?
         public int pavillion { get; set; }
-        //[DateTime]
         public DateTime start_time { get; set; }
-        //[DateTime]
         public DateTime end_time { get; set; }
         public bool is_approved { get; set; }
 

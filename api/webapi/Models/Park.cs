@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PPM.Models
 {
@@ -13,7 +14,8 @@ namespace PPM.Models
         public string park_name { get; set; } = string.Empty;
 
         [StringLength(255)]
-        public string geolocation { get; set; } = string.Empty;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? geolocation { get; set; } = string.Empty;
 
         [StringLength(255)]
         public string street_address { get; set; } = string.Empty;
