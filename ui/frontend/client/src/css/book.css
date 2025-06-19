@@ -1,0 +1,119 @@
+/* General Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  padding: 20px;
+}
+
+/* Container */
+.p-6 {
+  padding: 1.5rem;
+}
+
+.max-w-4xl {
+  max-width: 64rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Headings */
+h1 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center; /* Center the text */
+}
+
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+thead {
+  background-color: #e0f2fe;
+}
+
+tr:hover:not(:has(th)) {
+  background-color: #f1f5f9;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+button.text-blue-600 {
+  background: none;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+button.text-blue-600:hover {
+  text-decoration: underline;
+}
+
+button.bg-blue-600 {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+}
+
+button.bg-blue-600:hover {
+  background-color: #1d4ed8;
+}
+
+/* List and Time Slot Styles */
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.border-b {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
