@@ -4,9 +4,11 @@ using PPM.Models;
 
 namespace PPM.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ParkController(PPMDBContext db, ILogger<ParkController> logger) : ControllerBase
     {
-        [HttpGet("api/GetAllParks")]
+        [HttpGet("GetAllParks")]
         public async Task<ActionResult<IEnumerable<Park>>> GetAllParksAsync()
         {
             var parks = await db.Parks.ToListAsync();

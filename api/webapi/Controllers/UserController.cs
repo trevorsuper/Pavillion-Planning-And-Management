@@ -8,7 +8,7 @@ namespace PPM.Controllers
     // [Authorize] 
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(/*PPMDBContext db,*/ UserService userService, ILogger<UserController> logger) : ControllerBase
+    public class UserController(UserService userService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly UserService _userService = userService;
 
