@@ -1,6 +1,8 @@
+// FAQ.js
 import React, { useState } from 'react';
 import '../css/FAQ.css';
 import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 
 const faqs = [
   {
@@ -37,17 +39,20 @@ const FAQ = () => {
   };
 
   return (
-    <div className="faq-container">
-      <h1 className="faq-title">Frequently Asked Questions</h1>
-      {faqs.map((item, index) => (
-        <div key={index} className="faq-item">
-          <button className="faq-question" onClick={() => toggleFAQ(index)}>
-            {item.question}
-          </button>
-          {openIndex === index && <div className="faq-answer">{item.answer}</div>}
-        </div>
-      ))}
-    </div>
+    <>
+      <Header />
+      <div className="faq-container">
+        <h1 className="faq-title">Frequently Asked Questions</h1>
+        {faqs.map((item, index) => (
+          <div key={index} className="faq-item">
+            <button className="faq-question" onClick={() => toggleFAQ(index)}>
+              {item.question}
+            </button>
+            {openIndex === index && <div className="faq-answer">{item.answer}</div>}
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 

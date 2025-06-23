@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../css/Home.css';
 
 const images = [
@@ -24,14 +25,16 @@ const Home = () => {
   return (
     <div>
       <header className="header">
-        <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
+        <Link to="/home">
+          <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
+        </Link>
         <nav>
-          <a href="#book">Book Now!</a>
-          <a href="#events">Community Park Events</a>
-          <a href="#explore">Explore the Parks</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Contact an employee</a>
-          <a href="#login">Sign up/Login</a>
+          <Link to="/book">Book Now!</Link>
+          <Link to="/events">Community Park Events</Link>
+          <Link to="/explore">Explore the Parks</Link>
+          <Link to="/faq">FAQ</Link>
+          <Link to="/contact">Contact us</Link>
+          <Link to="/login">Sign up/Login</Link>
         </nav>
         <div className="socials">
           <img src="images/facebook-icon.png" alt="Facebook" />
@@ -47,7 +50,7 @@ const Home = () => {
             <img
               key={i}
               src={src}
-              alt={`Slide ${i}`}
+              alt={`Slide ${i + 1}`}
               className={i === index ? 'active' : ''}
             />
           ))}
