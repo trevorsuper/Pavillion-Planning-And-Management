@@ -9,5 +9,10 @@ namespace PPM.Interfaces
     public interface IUserRepository
     {
         Task<User> GetUserByIdAsync(int user_id);
+        Task<User> CreateUserAsync(User user);
+        Task<User> UpdateUserAsync(User user);
+        Task<User> UpdateUserAdminAsync(User user);
+        Task DeleteUserByIdAsync(int user_id);
+        Task<User?> GetUserByUsernameAsync(string username);
     }
 }

@@ -1,4 +1,6 @@
-﻿using PPM.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PPM.Interfaces;
 using PPM.Models;
 
 namespace PPM.Repositories
@@ -21,6 +23,39 @@ namespace PPM.Repositories
                 throw new KeyNotFoundException($"User with ID {user_id} was not found.");
             }
             return user;
+        }
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.username == username);
+        }
+        public async Task<User> CreateUserAsync(User user)
+        {
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+            return user;
+        }
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync();
+            return user;
+
+        }
+        public async Task<User> UpdateUserAdminAsync(User user)
+        {
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync();
+            return user;
+
+        }
+        public async Task DeleteUserByIdAsync(int user_id)
+        {
+            var user = await _db.Users.FindAsync(user_id); //Directly looks up the primary key (user_id) which is exactly what I want to delete.
+            if (user != null)
+            {
+               _db.Users.Remove(user);
+               await _db.SaveChangesAsync();
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using PPM.Models;
 
 namespace PPM
 {
-    public class PPMDBContext : DbContext
+    public class PPMDBContext : DbContext //Note: UserManager<User> or IdentityUser is a library that should be used in a future project one day
     {
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Park> Parks { get; set; } = null!;

@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PPM.Models
 {
     [Table("Users")]
-    public class User
+    public class User //: IdentityUser
     {
         [Key]
         public int user_id { get; set; }
