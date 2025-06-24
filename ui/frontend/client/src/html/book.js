@@ -1,68 +1,76 @@
 // Book.js
-import React, { useState } from 'react';
+// Run: npm install react-datepicker date-fns
+import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import '../css/book.css';
 import Header from '../components/Header';
 
-const parkData = [
-  {
-    id: 1,
-    name: 'Boulan Park',
-    timeslots: [
-      { id: 'bp1', date: 'June 25, 2025', time: '10:00 AM', available: true },
-      { id: 'bp2', date: 'June 25, 2025', time: '2:00 PM', available: false },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Brinston Park',
-    timeslots: [
-      { id: 'br1', date: 'June 26, 2025', time: '11:00 AM', available: true },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Firefighters Park',
-    timeslots: [
-      { id: 'fp1', date: 'June 27, 2025', time: '1:00 PM', available: true },
-    ],
-  },
-  {
-    id: 4,
-    name: 'Jaycee Park',
-    timeslots: [
-      { id: 'jp1', date: 'June 28, 2025', time: '9:00 AM', available: false },
-      { id: 'jp2', date: 'June 28, 2025', time: '3:00 PM', available: true },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Milverton Park',
-    timeslots: [
-      { id: 'mp1', date: 'June 29, 2025', time: '10:30 AM', available: true },
-    ],
-  },
-  {
-    id: 6,
-    name: 'Raintree Park',
-    timeslots: [
-      { id: 'rp1', date: 'June 30, 2025', time: '12:00 PM', available: true },
-    ],
-  },
-  {
-    id: 7,
-    name: 'Jeanne M Stine Community Park',
-    timeslots: [
-      { id: 'js1', date: 'July 1, 2025', time: '11:00 AM', available: false },
-      { id: 'js2', date: 'July 1, 2025', time: '2:00 PM', available: true },
-    ],
-  },
+const parkList = [
+  'Boulan Park',
+  'Brinston Park',
+  'Firefighters Park',
+  'Jaycee Park',
+  'Milverton Park',
+  'Raintree Park',
+  'Jeanne M Stine Community Park',
+];
+
+// Predefined time slots (max 8 hours)
+const timeSlots = [
+  { label: 'Full Day (9 AM–5 PM)', start: '09:00', end: '17:00' },
+  { label: '9 AM–12 PM', start: '09:00', end: '12:00' },
+  { label: '12 PM–3 PM', start: '12:00', end: '15:00' },
+  { label: '3 PM–6 PM', start: '15:00', end: '18:00' },
 ];
 
 function Book() {
-  const [expandedPark, setExpandedPark] = useState(null);
+  const [selectedPark, setSelectedPark] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [bookedDates, setBookedDates] = useState([]);
 
-  const toggleExpand = (parkId) => {
-    setExpandedPark((prev) => (prev === parkId ? null : parkId));
+  useEffect(() => {
+    // TODO: fetch real booked dates for the calendar
+    setBookedDates([
+      new Date(2025, 5, 25),
+      new Date(2025, 5, 28),
+    ]);
+  }, []);
+
+  const openBooking = (park) => {
+    setSelectedPark(park);
+    setSelectedDate(null);
+    setSelectedSlot(null);
+    setErrorMessage('');
+  };
+
+  const closeBooking = () => {
+    setSelectedPark(null);
+    setSelectedDate(null);
+    setSelectedSlot(null);
+    setErrorMessage('');
+  };
+
+  const handleSelectSlot = (slot) => {
+    setSelectedSlot(slot);
+    setErrorMessage('');
+  };
+
+  const handleConfirm = () => {
+    if (!selectedDate) {
+      setErrorMessage('Please select a date.');
+      return;
+    }
+    if (!selectedSlot) {
+      setErrorMessage('Please select a time slot.');
+      return;
+    }
+    alert(
+      `Booking confirmed for ${selectedPark} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
+    );
+    closeBooking();
   };
 
   return (
@@ -78,50 +86,66 @@ function Book() {
             </tr>
           </thead>
           <tbody>
-            {parkData.map((park) => (
-              <React.Fragment key={park.id}>
-                <tr className="bg-white hover:bg-gray-50">
-                  <td className="p-3 border font-medium">{park.name}</td>
-                  <td className="p-3 border">
-                    <button
-                      className="text-blue-600 hover:underline"
-                      onClick={() => toggleExpand(park.id)}
-                    >
-                      {expandedPark === park.id ? 'Hide Times' : 'View Times'}
-                    </button>
-                  </td>
-                </tr>
-
-                {expandedPark === park.id && (
-                  <tr>
-                    <td colSpan="2" className="p-3 border bg-gray-50">
-                      <ul className="space-y-2">
-                        {park.timeslots.map((slot) => (
-                          <li
-                            key={slot.id}
-                            className="flex justify-between items-center border-b pb-2"
-                          >
-                            <div>
-                              <span className="font-semibold">{slot.date}</span> at {slot.time}
-                            </div>
-                            {slot.available ? (
-                              <button className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-500">
-                                Reserve
-                              </button>
-                            ) : (
-                              <span className="text-red-600 font-medium">Full</span>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
+            {parkList.map((park, i) => (
+              <tr key={i} className="bg-white hover:bg-gray-50">
+                <td className="p-3 border font-medium">{park}</td>
+                <td className="p-3 border">
+                  <button
+                    className="text-blue-600 hover:underline"
+                    onClick={() => openBooking(park)}
+                  >
+                    Book now!
+                  </button>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {selectedPark && (
+        <div className="booking-popup">
+          <h2 className="text-lg font-bold mb-3">Book {selectedPark}</h2>
+
+          <label className="block mb-4 font-medium">Select a date:</label>
+          <DatePicker
+            inline
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            excludeDates={bookedDates}
+            minDate={new Date()}
+          />
+
+          <label className="block mb-3 font-medium">Choose a time slot:</label>
+          <div className="timeslot-grid mb-4">
+            {timeSlots.map((slot) => (
+              <button
+                key={slot.label}
+                className={`timeslot-button ${selectedSlot === slot ? 'selected' : ''}`}
+                onClick={() => handleSelectSlot(slot)}
+              >
+                {slot.label}
+              </button>
+            ))}
+          </div>
+
+          {errorMessage && (
+            <div className="text-red-600 mb-3">{errorMessage}</div>
+          )}
+
+          <div className="button-row">
+            <button onClick={closeBooking} className="btn-cancel">
+              Cancel
+            </button>
+            <button
+              onClick={handleConfirm}
+              className="btn-confirm"
+            >
+              Confirm Booking
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
