@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import './css/Home.css';
 
-import Header from './components/Header'; // assuming you've created it
+import Header from './components/Header';
 import Contact from './html/Contact.js';
 import Explore from './html/Explore.js';
 import ParkEvents from './html/ParkEvents.js';
 import FAQ from './html/FAQ.js';
 import Book from './html/book.js';
 import Login from './html/login.js';
-import Home from './html/Home.js'; // ✅ import the real Home component
+import Home from './html/Home.js'; 
 
 function App() {
   const [message, setMessage] = useState('');
@@ -24,10 +24,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* ✅ Homepage now uses the Home.js component */}
         <Route path="/" element={<Home />} />
 
-        {/* ✅ Redirect /home to / to avoid duplication */}
         <Route path="/home" element={<Navigate to="/" />} />
 
         <Route path="/events" element={<ParkEvents />} />
@@ -38,7 +36,6 @@ function App() {
         <Route path="/login" element={<Login />} />
       </Routes>
 
-      {/* Optional server message display */}
       <section style={{ padding: '20px', textAlign: 'center', fontSize: '1.25rem' }}>
         <strong>Server Message:</strong> {message}
       </section>
