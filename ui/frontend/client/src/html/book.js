@@ -3,64 +3,100 @@ import React, { useState } from 'react';
 import '../css/book.css';
 import Header from '../components/Header';
 
-const mockEventData = [
+const parkData = [
   {
     id: 1,
-    name: 'Music in the Park',
+    name: 'Boulan Park',
     timeslots: [
-      { id: 'a', date: 'June 20, 2025', time: '6:00 PM', available: true },
-      { id: 'b', date: 'June 21, 2025', time: '6:00 PM', available: false },
+      { id: 'bp1', date: 'June 25, 2025', time: '10:00 AM', available: true },
+      { id: 'bp2', date: 'June 25, 2025', time: '2:00 PM', available: false },
     ],
   },
   {
     id: 2,
-    name: 'Farmers Market',
+    name: 'Brinston Park',
     timeslots: [
-      { id: 'c', date: 'June 22, 2025', time: '10:00 AM', available: true },
-      { id: 'd', date: 'June 23, 2025', time: '10:00 AM', available: true },
+      { id: 'br1', date: 'June 26, 2025', time: '11:00 AM', available: true },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Firefighters Park',
+    timeslots: [
+      { id: 'fp1', date: 'June 27, 2025', time: '1:00 PM', available: true },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Jaycee Park',
+    timeslots: [
+      { id: 'jp1', date: 'June 28, 2025', time: '9:00 AM', available: false },
+      { id: 'jp2', date: 'June 28, 2025', time: '3:00 PM', available: true },
+    ],
+  },
+  {
+    id: 5,
+    name: 'Milverton Park',
+    timeslots: [
+      { id: 'mp1', date: 'June 29, 2025', time: '10:30 AM', available: true },
+    ],
+  },
+  {
+    id: 6,
+    name: 'Raintree Park',
+    timeslots: [
+      { id: 'rp1', date: 'June 30, 2025', time: '12:00 PM', available: true },
+    ],
+  },
+  {
+    id: 7,
+    name: 'Jeanne M Stine Community Park',
+    timeslots: [
+      { id: 'js1', date: 'July 1, 2025', time: '11:00 AM', available: false },
+      { id: 'js2', date: 'July 1, 2025', time: '2:00 PM', available: true },
     ],
   },
 ];
 
 function Book() {
-  const [expandedEvent, setExpandedEvent] = useState(null);
+  const [expandedPark, setExpandedPark] = useState(null);
 
-  const toggleExpand = (eventId) => {
-    setExpandedEvent((prev) => (prev === eventId ? null : eventId));
+  const toggleExpand = (parkId) => {
+    setExpandedPark((prev) => (prev === parkId ? null : parkId));
   };
 
   return (
     <>
       <Header />
       <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Book Now</h1>
+        <h1 className="text-2xl font-bold mb-6">Book a Pavilion</h1>
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-blue-100 text-left">
-              <th className="p-3 border">Event</th>
+              <th className="p-3 border">Park</th>
               <th className="p-3 border">Action</th>
             </tr>
           </thead>
           <tbody>
-            {mockEventData.map((event) => (
-              <React.Fragment key={event.id}>
+            {parkData.map((park) => (
+              <React.Fragment key={park.id}>
                 <tr className="bg-white hover:bg-gray-50">
-                  <td className="p-3 border font-medium">{event.name}</td>
+                  <td className="p-3 border font-medium">{park.name}</td>
                   <td className="p-3 border">
                     <button
                       className="text-blue-600 hover:underline"
-                      onClick={() => toggleExpand(event.id)}
+                      onClick={() => toggleExpand(park.id)}
                     >
-                      {expandedEvent === event.id ? 'Hide Times' : 'View Times'}
+                      {expandedPark === park.id ? 'Hide Times' : 'View Times'}
                     </button>
                   </td>
                 </tr>
 
-                {expandedEvent === event.id && (
+                {expandedPark === park.id && (
                   <tr>
                     <td colSpan="2" className="p-3 border bg-gray-50">
                       <ul className="space-y-2">
-                        {event.timeslots.map((slot) => (
+                        {park.timeslots.map((slot) => (
                           <li
                             key={slot.id}
                             className="flex justify-between items-center border-b pb-2"
