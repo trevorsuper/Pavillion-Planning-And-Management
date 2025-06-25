@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../css/book.css';
 import Header from '../components/Header';
+import { useAuth } from '../context/AuthContext';
 
 const parkList = [
   'Boulan Park',
@@ -31,6 +32,8 @@ function Book() {
   const [errorMessage, setErrorMessage] = useState('');
   const [bookedDates, setBookedDates] = useState([]);
 
+  const { user, isAuthenticated } = useAuth();
+
   useEffect(() => {
     // TODO: fetch real booked dates for the calendar
     setBookedDates([
@@ -40,6 +43,10 @@ function Book() {
   }, []);
 
   const openBooking = (park) => {
+    if (!isAuthenticated) {
+      alert("You must be logged in to book a pavilion.");
+      return;
+    }
     setSelectedPark(park);
     setSelectedDate(null);
     setSelectedSlot(null);
@@ -106,6 +113,9 @@ function Book() {
       {selectedPark && (
         <div className="booking-popup">
           <h2 className="text-lg font-bold mb-3">Book {selectedPark}</h2>
+
+          <p className="mb-1"><strong>Name:</strong> {user?.name}</p>
+          <p className="mb-4"><strong>Email:</strong> {user?.email}</p>
 
           <label className="block mb-4 font-medium">Select a date:</label>
           <DatePicker
