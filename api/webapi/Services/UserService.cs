@@ -26,6 +26,21 @@ namespace PPM.Services
                 is_admin = user.is_admin,
             };
         }
+        /*
+        public async Task<UserDTO> GetUserByLoginAsync(LoginUserDTO userDTO)
+        {
+            var user = await _userRepository.GetUserLoginDetails(userDTO);
+            return new UserDTO
+            {
+                user_id = userDTO.user_id,
+                first_name = userDTO.first_name,
+                last_name = userDTO.last_name,
+                username = userDTO.username,
+                is_admin= userDTO.is_admin
+            };
+            return user;
+        }
+        */
         public async Task<UserDTO> RegisterUserAsync(RegisterUserDTO userDTO)
         {
             var existing_user = await _userRepository.GetUserByUsernameAsync(userDTO.username);

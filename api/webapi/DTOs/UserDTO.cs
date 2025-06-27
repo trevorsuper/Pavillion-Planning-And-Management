@@ -11,7 +11,7 @@
         /*
         public string email { get; set; } = string.Empty;
 
-        public string password { get; set; } = string.Empty;
+        public string password_hash { get; set; } = string.Empty;
 
         public string phone_number { get; set; } = string.Empty;
         */

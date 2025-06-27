@@ -28,6 +28,13 @@ namespace PPM.Repositories
         {
             return await _db.Users.FirstOrDefaultAsync(u => u.username == username);
         }
+        /*
+        public async Task<User> GetUserByLoginDetails(User login_user)
+        {
+            var user = await _db.Users.SingleOrDefault(u => u.username == login_user.username && u.password_hash == login_user.password_hard);
+            return user;
+        }
+        */
         public async Task<User> CreateUserAsync(User user)
         {
             _db.Users.Add(user);

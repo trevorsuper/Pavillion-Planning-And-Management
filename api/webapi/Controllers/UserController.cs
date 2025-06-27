@@ -10,9 +10,10 @@ namespace PPM.Controllers
     // [Authorize] 
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(UserService userService, ILogger<UserController> logger) : ControllerBase
+    public class UserController(UserService userService, IConfiguration configuration, ILogger<UserController> logger) : ControllerBase
     {
         private readonly UserService _userService = userService;
+        private readonly IConfiguration _configuration;
 
         [HttpGet("{user_id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int user_id)
@@ -31,7 +32,19 @@ namespace PPM.Controllers
             var user = await _userService.RegisterUserAsync(userDTO);
             return Ok(user);
         }
-
+        /*
+        [Authorize]
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO userDTO)
+        {
+            var user = await _userService.GetUserByLoginAsync(userDTO);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+        }
+        */
+        // [Authorize]
         [HttpPut("UpdateUser/{user_id}")]
         public async Task<IActionResult> UpdateUser(int user_id, UpdateUserDTO userDTO)
         {
@@ -69,7 +82,7 @@ namespace PPM.Controllers
                 return NotFound();
             }
         }
-
+        // [Authorize]
         [HttpDelete("DeleteUser/{user_id}")]
         public async Task<IActionResult> DeleteUser(int user_id)
         {

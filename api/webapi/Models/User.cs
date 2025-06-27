@@ -24,7 +24,7 @@ namespace PPM.Models
         public string email { get; set; } = string.Empty;
 
         [StringLength(50)]
-        public string password { get; set; } = string.Empty;
+        public string password_hash { get; set; } = string.Empty;
 
         [StringLength(50)]
         public string phone_number { get; set; } = string.Empty;
