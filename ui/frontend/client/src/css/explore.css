@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    padding-top: 2rem;
+}
+
+.carousel-container {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.carousel-container img {
+    width: 50%; /* prev: 500px */
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+}

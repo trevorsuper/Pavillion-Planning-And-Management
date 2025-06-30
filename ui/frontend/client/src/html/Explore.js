@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import '../css/explore.css';
 
 function Explore() {
     const images = [
@@ -31,12 +32,12 @@ function Explore() {
     }
 
   return <div>
-    <h1>Explore the Parks</h1>
-    <div className="carousel-container">
+    <h1 class="title">Explore the Parks</h1>
+    <div class="carousel-container">
         <img src={images[imgIndex]} alt="Image carousel of different parks in Troy."></img>
     </div>
 
-    <div className="image-list-container">
+    <div class="image-list-container">
         <img src={images[0]}></img>
         <img src={images[1]}></img>
         <img src={images[2]}></img>
