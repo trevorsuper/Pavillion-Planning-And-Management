@@ -1,78 +1,47 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PPM.Models; // Assuming your Registration model is here
-using PPM.Data;   // Assuming PPMDBContext is here
+using PPM.Models.DTOs;
+using PPM.Services;
 
 namespace PPM.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class RegistrationController : ControllerBase
+    [ApiController]
+    public class RegistrationController(EventRegistrationService eventRegService, ILogger<RegistrationController> logger) : ControllerBase
     {
-        private readonly PPMDBContext _db;
-        private readonly ILogger<RegistrationController> _logger;
+        private readonly EventRegistrationService _eventRegService = eventRegService;
 
-        public RegistrationController(PPMDBContext db, ILogger<RegistrationController> logger)
+        [HttpPost("RegisterForEvent")]
+        public async Task<ActionResult<EventRegistrationDTO>> RegisterUserForEvent(RegisterEventDTO dto)
         {
-            _db = db;
-            _logger = logger;
+            var result = await _eventRegService.RegisterUserForEventAsync(dto);
+            if (result == null)
+            {
+                return BadRequest("User or Event not found, or user is already registered.");
+            }
+            return Ok(result);
         }
 
-        // CREATE
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Registration reg)
+        [HttpGet("GetUserRegistrations/{userId}")]
+        public async Task<ActionResult<List<EventRegistrationDTO>>> GetUserRegistrations(int userId)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            reg.RegistrationDate = DateTime.Now;
-            _db.Registrations.Add(reg);
-            await _db.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetById), new { id = reg.Id }, reg);
+            var list = await _eventRegService.GetRegistrationsByUserIdAsync(userId);
+            return Ok(list);
         }
 
-        // READ - All
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpPut("UpdateRegistrationStatus/{registrationId}")]
+        public async Task<IActionResult> UpdateStatus(int registrationId, [FromBody] string newStatus)
         {
-            var regs = await _db.Registrations.ToListAsync();
-            return Ok(regs);
+            var updated = await _eventRegService.UpdateRegistrationStatusAsync(registrationId, newStatus);
+            if (updated == null) return NotFound();
+            return Ok(updated);
         }
 
-        // READ - One
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpDelete("DeleteRegistration/{registrationId}")]
+        public async Task<IActionResult> DeleteRegistration(int registrationId)
         {
-            var reg = await _db.Registrations.FindAsync(id);
-            if (reg == null) return NotFound();
-            return Ok(reg);
-        }
-
-        // UPDATE
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Registration updated)
-        {
-            var reg = await _db.Registrations.FindAsync(id);
-            if (reg == null) return NotFound();
-
-            reg.Status = updated.Status;
-            reg.EventId = updated.EventId;
-            reg.UserId = updated.UserId;
-
-            await _db.SaveChangesAsync();
-            return Ok(reg);
-        }
-
-        // DELETE
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var reg = await _db.Registrations.FindAsync(id);
-            if (reg == null) return NotFound();
-
-            _db.Registrations.Remove(reg);
-            await _db.SaveChangesAsync();
-            return Ok("Registration deleted.");
+            var success = await _eventRegService.DeleteRegistrationAsync(registrationId);
+            if (!success) return NotFound();
+            return NoContent();
         }
     }
 }
