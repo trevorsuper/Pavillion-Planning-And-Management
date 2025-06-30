@@ -8,16 +8,16 @@ function Contact() {
     <div class="form-container">
       <form>
         <div class="form-row">
-          <input type="email" placeholder="Email"></input>
-          <input type="tel" placeholder="(111)-222-3333"></input>
+          <input type="email" placeholder="Email" required></input>
+          <input type="tel" placeholder="(111)-222-3333" required></input>
         </div>
         
         <div class="form-row">
-          <input type="text" placeholder="First Name"></input>
-          <input type="text" placeholder="Last Name"></input>
+          <input type="text" placeholder="First Name" required></input>
+          <input type="text" placeholder="Last Name" required></input>
         </div>
 
-        <textarea placeholder="Message..." class="form-message"></textarea>
+        <textarea placeholder="Message..." class="form-message" required></textarea>
         <input type="Submit" class="form-submit"></input>
       </form>
     </div>
