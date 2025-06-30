@@ -1,5 +1,7 @@
+// ParkEvents.js
 import React from 'react';
 import '../css/ParkEvents.css';
+import Header from '../components/Header';
 
 const events = [
   {
@@ -21,19 +23,22 @@ const events = [
 
 const ParkEvents = () => {
   return (
-    <div className="events-container">
-      <h1 className="events-title">Upcoming Registerable Park Events</h1>
-      <div className="event-list">
-        {events.map((event, idx) => (
-          <div key={idx} className="event-card">
-            <h2>{event.title}</h2>
-            <p><strong>Date:</strong> {event.date}</p>
-            <p><strong>Spots Available:</strong> {event.spots}</p>
-            <button className="register-btn">Register</button>
-          </div>
-        ))}
+    <>
+      <Header />
+      <div className="events-container">
+        <h1 className="events-title">Upcoming Registerable Park Events</h1>
+        <div className="event-list">
+          {events.map((event, idx) => (
+            <div key={idx} className="event-card">
+              <h2>{event.title}</h2>
+              <p><strong>Date:</strong> {event.date}</p>
+              <p><strong>Spots Available:</strong> {event.spots}</p>
+              <button className="register-btn">Register</button>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

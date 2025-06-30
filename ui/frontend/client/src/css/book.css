@@ -35,7 +35,6 @@ h1 {
   text-align: center; /* Center the text */
 }
 
-
 /* Table Styles */
 table {
   width: 100%;
@@ -116,4 +115,98 @@ button.bg-blue-600:hover {
 
 .bg-gray-50 {
   background-color: #f9fafb;
+}
+
+/* Booking Popup Box (top-right corner) */
+.booking-popup {
+  position: fixed;
+  top: 6rem;
+  right: 2rem;
+  width: 24rem;         /* increased from 20rem */
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;      /* increased from 1rem */
+  z-index: 50;
+}
+
+.booking-popup label {
+  display: block;
+  margin-bottom: 1rem;  /* increased from 0.75rem */
+  font-weight: 500;
+}
+
+.booking-popup input[type="date"],
+.booking-popup input[type="time"] {
+  margin-top: 0.25rem;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+.booking-popup .button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.booking-popup .btn-cancel {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: 0.875rem;
+  background-color: #d1d5db;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+}
+
+.booking-popup .btn-cancel:hover {
+  background-color: #a1a1aa;
+}
+
+.booking-popup .btn-confirm {
+  font-size: 0.875rem;
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+}
+
+.booking-popup .btn-confirm:hover {
+  background-color: #1d4ed8;
+}
+
+.booking-popup .text-red-600 {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Time-slot Grid Styles */
+.timeslot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.timeslot-button {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #fff;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.timeslot-button:hover {
+  background-color: #f1f5f9;
+}
+
+.timeslot-button.selected {
+  border-color: #2563eb;
+  background-color: #e0f2fe;
 }

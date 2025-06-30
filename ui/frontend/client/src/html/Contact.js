@@ -1,3 +1,4 @@
+// Contact.js
 import React, { useEffect, useState } from 'react';
 import '../css/contact.css';
 

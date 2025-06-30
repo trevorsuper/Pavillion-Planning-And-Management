@@ -1,79 +1,207 @@
-import React from 'react';
+// login.js
+import React, { useState } from 'react';
 import '../css/login.css';
+import Header from '../components/Header';
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
+  const { login } = useAuth();
+
+  const [isLoginMode, setIsLoginMode] = useState(true);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    password: '',
+    phoneNumber: '',
+  });
+
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const toggleMode = () => {
+    setIsLoginMode(!isLoginMode);
+    setFormData({
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+      password: '',
+      phoneNumber: '',
+    });
+    setErrorMessage('');
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    const endpoint = isLoginMode
+      ? 'http://localhost:5000/api/user/login'
+      : 'http://localhost:5000/api/user/register';
+
+    const payload = isLoginMode
+      ? {
+          username: formData.username,
+          password: formData.password,
+        }
+      : {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          phone_number: formData.phoneNumber,
+        };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Response status:`, response.status);
+
+      if (!response.ok) {
+        try {
+          const text = await response.text();
+          console.error(`[${isLoginMode ? 'Login' : 'Signup'}] Error text:`, text);
+          if (response.status === 401 || response.status === 400 || response.status === 409) {
+            setErrorMessage('Invalid input or credentials. Please check your information.');
+          } else {
+            setErrorMessage('Server error. Please try again later.');
+          }
+        } catch (parseErr) {
+          console.error('Error parsing response:', parseErr);
+          setErrorMessage('Unexpected error occurred.');
+        }
+        return;
+      }
+
+      const data = await response.json();
+      console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Success:`, data);
+
+      if (isLoginMode) {
+        login(data);
+        alert(`Logged in as ${data.username}`);
+      } else {
+        alert('Account created successfully!');
+        setIsLoginMode(true);
+      }
+    } catch (err) {
+      console.error(`[${isLoginMode ? 'Login' : 'Signup'}] Network error:`, err);
+      setErrorMessage('Network error. Please try again later.');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      {/* Login Box */}
-      <div className="bg-white rounded-lg shadow-lg p-10 w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-xl text-gray-700 mt-2">Login</h1>
-        </div>
+    <>
+      <Header />
+      <div className="login-container">
+        <div className="login-box">
+          <div className="login-header">
+            <h1>{isLoginMode ? 'Login to Your Account' : 'Create an Account'}</h1>
+          </div>
 
-        {/* Form */}
-        <form>
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 mb-1">
-              Username
-            </label>
+          {errorMessage && (
+            <div className="error-message">
+              {errorMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            {!isLoginMode && (
+              <>
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </>
+            )}
+
+            <label htmlFor="username">Username</label>
             <input
-              id="username"
               type="text"
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
             />
-          </div>
 
-          <div className="mb-2">
-            <label htmlFor="password" className="block text-gray-700 mb-1">
-              Password
-            </label>
+            {!isLoginMode && (
+              <>
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+                <label htmlFor="phoneNumber">Phone Number</label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                />
+              </>
+            )}
+
+            <label htmlFor="password">Password</label>
             <input
-              id="password"
               type="password"
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
             />
-          </div>
 
-          {/* Forgot Links */}
-          <div className="flex justify-between text-sm text-blue-700 mt-1 mb-6">
-            <button
-              type="button"
-              className="hover:underline"
-              onClick={() => alert('Redirect to Forgot Username')}
-            >
-              Forgot Username?
-            </button>
-            <button
-              type="button"
-              className="hover:underline"
-              onClick={() => alert('Redirect to Forgot Password')}
-            >
-              Forgot Password?
-            </button>
-          </div>
+            {isLoginMode && (
+              <div className="forgot-links">
+                <button type="button" onClick={() => alert('Forgot Username clicked')}>
+                  Forgot Username?
+                </button>
+                <button type="button" onClick={() => alert('Forgot Password clicked')}>
+                  Forgot Password?
+                </button>
+              </div>
+            )}
 
-          {/* Buttons */}
-          <div className="flex flex-col space-y-3">
-            <button
-              type="submit"
-              className="w-full bg-blue-900 text-white py-2 rounded hover:bg-blue-800 transition"
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              className="w-full border border-blue-900 text-blue-900 py-2 rounded hover:bg-blue-50 transition"
-              onClick={() => alert('Redirect to Sign Up')}
-            >
-              Sign Up
-            </button>
-          </div>
-        </form>
+            <div className="login-actions">
+              <button type="submit" className="login-btn">
+                {isLoginMode ? 'Login' : 'Sign Up'}
+              </button>
+              <button
+                type="button"
+                className="signup-btn"
+                onClick={toggleMode}
+              >
+                {isLoginMode ? 'Create an account' : 'Back to login'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PPM;
+using PPM.Interfaces;
+using PPM.Repositories;
+using PPM.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,11 @@ builder.Services.AddDbContext<PPMDBContext>(options => {
     options.UseSqlServer(
        builder.Configuration.GetConnectionString("PPMDatabase"));
 });
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IParkRepository, ParkRepository>();
+builder.Services.AddScoped<ParkService>();
 
 var app = builder.Build();
 
