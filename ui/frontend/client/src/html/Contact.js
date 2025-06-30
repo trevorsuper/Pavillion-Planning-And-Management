@@ -1,26 +1,28 @@
 // Contact.js
 import React, { useEffect, useState } from 'react';
-import Header from '../components/Header';
+import '../css/contact.css';
 
 function Contact() {
-  return (
-    <>
-      <Header />
-      <div>
-        <h1>Contact Us</h1>
-        <form>
-          <input type="email" placeholder="Email" />
-          <input type="tel" placeholder="(111)-222-3333" />
-          <br />
-          <input type="text" placeholder="First Name" />
-          <input type="text" placeholder="Last Name" />
-          <br />
-          <input type="text" placeholder="Message..." />
-          <input type="submit" />
-        </form>
-      </div>
-    </>
-  );
+
+  return <div>
+    <h1 class="title">Contact Us</h1>
+    <div class="form-container">
+      <form>
+        <div class="form-row">
+          <input type="email" placeholder="Email" required></input>
+          <input type="tel" placeholder="(111)-222-3333" required></input>
+        </div>
+        
+        <div class="form-row">
+          <input type="text" placeholder="First Name" required></input>
+          <input type="text" placeholder="Last Name" required></input>
+        </div>
+
+        <textarea placeholder="Message..." class="form-message" required></textarea>
+        <input type="Submit" class="form-submit"></input>
+      </form>
+    </div>
+  </div>;
 }
 
 export default Contact;
