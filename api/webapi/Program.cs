@@ -3,7 +3,6 @@ using PPM;
 using PPM.Interfaces;
 using PPM.Repositories;
 using PPM.Services;
-using BCrypt.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
