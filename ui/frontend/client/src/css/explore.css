@@ -25,3 +25,10 @@ body {
     object-fit: cover;
     object-position: center;
 }
+
+.image-list-container img {
+    width: 250px;
+    height: 150px;
+    margin: 1rem;
+    border: 1px solid gray;
+}
