@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using PPM.Models;
 using PPM.Models.DTOs;
 using PPM.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PPM.Controllers
 {
@@ -10,10 +15,9 @@ namespace PPM.Controllers
     // [Authorize] 
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(UserService userService, IConfiguration configuration, ILogger<UserController> logger) : ControllerBase
+    public class UserController(UserService userService, ILogger<UserController> logger) : ControllerBase
     {
         private readonly UserService _userService = userService;
-        private readonly IConfiguration _configuration;
 
         [HttpGet("{user_id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int user_id)
@@ -32,18 +36,23 @@ namespace PPM.Controllers
             var user = await _userService.RegisterUserAsync(userDTO);
             return Ok(user);
         }
-        /*
-        [Authorize]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDTO userDTO)
         {
-            var user = await _userService.GetUserByLoginAsync(userDTO);
-            if (user == null)
+            try
             {
-                return Unauthorized();
+                var auth_response = await _userService.GetUserByLoginAsync(userDTO);
+                return Ok(auth_response);
+            }
+            catch (KeyNotFoundException)
+            {
+                return Unauthorized("Username or Password Field Empty");
+            }
+            catch (UnauthorizedAccessException) 
+            {
+                return Unauthorized("Invalid Username Or Password");
             }
         }
-        */
         // [Authorize]
         [HttpPut("UpdateUser/{user_id}")]
         public async Task<IActionResult> UpdateUser(int user_id, UpdateUserDTO userDTO)
@@ -96,5 +105,20 @@ namespace PPM.Controllers
                 return NotFound();
             }
         }
+        /*
+        [HttpPatch("SetPassword/{user_id}")]
+        public async Task<IActionResult> SetPassword(int user_id, [FromBody] SetPasswordDTO dto)
+        {
+            try
+            {
+                await _userService.SetPasswordAsync(user_id, dto.password);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("User Not Found.");
+            }
+        }
+        */
     }
 }

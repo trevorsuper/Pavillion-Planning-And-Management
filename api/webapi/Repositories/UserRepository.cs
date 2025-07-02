@@ -26,23 +26,23 @@ namespace PPM.Repositories
         }
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return await _db.Users.FirstOrDefaultAsync(u => u.username == username);
+            if (!IsValidUsername(username))
+            {
+                throw new KeyNotFoundException("Username Invalid.");
+            }
+            string username_normalized = username.ToLowerInvariant().Trim(); // Normalizes the username once it hits the database
+            return await _db.Users.FirstOrDefaultAsync(u => u.username == username_normalized);
         }
-        /*
-        public async Task<User> GetUserByLoginDetails(User login_user)
-        {
-            var user = await _db.Users.SingleOrDefault(u => u.username == login_user.username && u.password_hash == login_user.password_hard);
-            return user;
-        }
-        */
         public async Task<User> CreateUserAsync(User user)
         {
+            user.username = user.username.ToLowerInvariant().Trim();
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
             return user;
         }
         public async Task<User> UpdateUserAsync(User user)
         {
+            user.username = user.username.ToLowerInvariant().Trim();
             _db.Users.Update(user);
             await _db.SaveChangesAsync();
             return user;
@@ -50,6 +50,7 @@ namespace PPM.Repositories
         }
         public async Task<User> UpdateUserAdminAsync(User user)
         {
+            user.username = user.username.ToLowerInvariant().Trim();
             _db.Users.Update(user);
             await _db.SaveChangesAsync();
             return user;
@@ -63,6 +64,14 @@ namespace PPM.Repositories
                _db.Users.Remove(user);
                await _db.SaveChangesAsync();
             }
+        }
+
+        public bool IsValidUsername(string username)
+        {
+            return !string.IsNullOrEmpty(username) 
+                && username.Trim().Length == username.Length //Removes trailing spaces
+                && !username.Contains(' ')
+                && username.All(char.IsLetterOrDigit); //The Last Field enforces Alphanumeric Character support
         }
     }
 }

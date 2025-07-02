@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace webapi.DTOs
+namespace PPM.Models.DTOs
 {
     public class RegistrationDTO
     {
