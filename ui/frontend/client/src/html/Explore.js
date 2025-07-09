@@ -1,6 +1,8 @@
 // Explore.js
 import React, { useEffect, useState } from 'react';
 import '../css/explore.css';
+import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 
 function Explore() {
     const images = [
@@ -69,6 +71,7 @@ function Explore() {
 
     return (
         <div>
+            <Header />
             <h1 className="title">Explore the Parks</h1>
             <div className="carousel-container">
                 <img src={images[imgIndex]} alt="Image carousel of different parks in Troy." />

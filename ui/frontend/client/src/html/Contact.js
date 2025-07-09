@@ -1,10 +1,14 @@
 // Contact.js
 import React, { useEffect, useState } from 'react';
 import '../css/contact.css';
+import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 
 function Contact() {
 
-  return <div>
+  return (
+    <div>
+    <Header />
     <h1 class="title">Contact Us</h1>
     <div class="form-container">
       <form>
@@ -22,7 +26,8 @@ function Contact() {
         <input type="Submit" class="form-submit"></input>
       </form>
     </div>
-  </div>;
+  </div>
+  );
 }
 
 export default Contact;
