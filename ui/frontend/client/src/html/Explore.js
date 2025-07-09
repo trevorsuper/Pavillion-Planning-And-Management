@@ -70,21 +70,9 @@ function Explore() {
             </div>
 
             <div className="image-list-container">
-                <img 
-                    src={images[0]} 
-                    alt="Park view 1"
-                    onClick={() => openModal(images[0])}
-                />
-                <img 
-                    src={images[1]} 
-                    alt="Park view 2"
-                    onClick={() => openModal(images[1])}
-                />
-                <img 
-                    src={images[2]} 
-                    alt="Park view 3"
-                    onClick={() => openModal(images[2])}
-                />
+                <img src={images[0]} alt="Picture of Firefighters park." onClick={() => openModal(images[0])}/>
+                <img src={images[1]} alt="Picture of Jaycee park." onClick={() => openModal(images[1])}/>
+                <img src={images[2]} alt="Picture of Brinston park." onClick={() => openModal(images[2])}/>
             </div>
 
             {isModalOpen && (
