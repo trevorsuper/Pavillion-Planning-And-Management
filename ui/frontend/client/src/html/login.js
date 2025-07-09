@@ -42,8 +42,8 @@ function Login() {
     setErrorMessage('');
 
     const endpoint = isLoginMode
-      ? 'http://localhost:5000/api/user/login'
-      : 'http://localhost:5000/api/user/register';
+      ? 'https://localhost:7203/api/User/Login'
+      : 'https://localhost:7203/api/User/Register';
 
     const payload = isLoginMode
       ? {
@@ -56,7 +56,7 @@ function Login() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          phone_number: formData.phoneNumber,
+          //phone_number: formData.phoneNumber,
         };
 
     try {
@@ -89,7 +89,7 @@ function Login() {
 
       if (isLoginMode) {
         login(data);
-        alert(`Logged in as ${data.username}`);
+        alert(`Logged in as ${data.user.username}`);
       } else {
         alert('Account created successfully!');
         setIsLoginMode(true);

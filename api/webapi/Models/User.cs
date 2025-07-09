@@ -18,13 +18,13 @@ namespace PPM.Models
 
         [StringLength(255)]
         public string username { get; set; } = string.Empty;
-        //These three saved for later
+
+        [StringLength(60)]
+        public string password_hash { get; set; } = string.Empty;
+        //These two saved for later
         /*
         [StringLength(50)]
         public string email { get; set; } = string.Empty;
-
-        [StringLength(50)]
-        public string password { get; set; } = string.Empty;
 
         [StringLength(50)]
         public string phone_number { get; set; } = string.Empty;
