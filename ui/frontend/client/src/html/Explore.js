@@ -9,6 +9,8 @@ function Explore() {
     ]
 
     const [imgIndex, setImgIndex] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalImageSrc, setModalImageSrc] = useState('');
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -31,19 +33,70 @@ function Explore() {
         setImgIndex(index);
     }
 
-  return <div>
-    <h1 class="title">Explore the Parks</h1>
-    <div class="carousel-container">
-        <img src={images[imgIndex]} alt="Image carousel of different parks in Troy."></img>
-    </div>
+    const openModal = (imageSrc) => {
+        setModalImageSrc(imageSrc);
+        setIsModalOpen(true);
+    }
 
-    <div class="image-list-container">
-        <img src={images[0]}></img>
-        <img src={images[1]}></img>
-        <img src={images[2]}></img>
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setModalImageSrc('');
+    }
 
-    </div>
-  </div>;
+    // Close modal when clicking outside the image
+    const handleModalClick = (e) => {
+        if (e.target.className === 'modal-overlay') {
+            closeModal();
+        }
+    }
+
+    // Close modal with Escape key
+    useEffect(() => {
+        const handleEscapeKey = (e) => {
+            if (e.key === 'Escape' && isModalOpen) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', handleEscapeKey);
+        return () => document.removeEventListener('keydown', handleEscapeKey);
+    }, [isModalOpen]);
+
+    return (
+        <div>
+            <h1 className="title">Explore the Parks</h1>
+            <div className="carousel-container">
+                <img src={images[imgIndex]} alt="Image carousel of different parks in Troy." />
+            </div>
+
+            <div className="image-list-container">
+                <img 
+                    src={images[0]} 
+                    alt="Park view 1"
+                    onClick={() => openModal(images[0])}
+                />
+                <img 
+                    src={images[1]} 
+                    alt="Park view 2"
+                    onClick={() => openModal(images[1])}
+                />
+                <img 
+                    src={images[2]} 
+                    alt="Park view 3"
+                    onClick={() => openModal(images[2])}
+                />
+            </div>
+
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={handleModalClick}>
+                    <div className="modal-content">
+                        <button className="modal-close" onClick={closeModal}>×</button>
+                        <img src={modalImageSrc} alt="Full size park view" />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default Explore;
