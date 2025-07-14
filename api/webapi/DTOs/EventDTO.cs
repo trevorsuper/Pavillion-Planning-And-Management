@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PPM.Models.DTOs
+﻿namespace PPM.Models.DTOs
 {
     public class EventDTO
     {
@@ -13,5 +11,7 @@ namespace PPM.Models.DTOs
         public DateTime event_end_time { get; set; }
         public bool is_public_event { get; set; }
         public int num_of_attendees { get; set; }
+        public UserDTO User { get; set; }
+        public ParkDTO Park { get; set; }
     }
 }

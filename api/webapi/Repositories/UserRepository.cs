@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PPM.Interfaces;
 using PPM.Models;
+using System.Net.Mail;
 
 namespace PPM.Repositories
 {
@@ -42,19 +44,37 @@ namespace PPM.Repositories
         }
         public async Task<User> UpdateUserAsync(User user)
         {
-            user.username = user.username.ToLowerInvariant().Trim();
-            _db.Users.Update(user);
+            var existing_user = await _db.Users.FindAsync(user.user_id);
+            if (existing_user == null)
+            {
+                throw new KeyNotFoundException("User Does Not Exist.");
+            }
+            if (!IsValidUsername(user.username))
+            {
+                throw new KeyNotFoundException("Username Invalid.");
+            }
+            existing_user.username = user.username.ToLowerInvariant().Trim();
+            existing_user.first_name = user.first_name;
+            existing_user.last_name = user.last_name;
             await _db.SaveChangesAsync();
-            return user;
-
+            return existing_user;
         }
         public async Task<User> UpdateUserAdminAsync(User user)
         {
-            user.username = user.username.ToLowerInvariant().Trim();
-            _db.Users.Update(user);
+            var existing_user = await _db.Users.FindAsync(user.user_id);
+            if (existing_user == null)
+            {
+                throw new KeyNotFoundException("User Does Not Exist.");
+            }
+            if (!IsValidUsername(user.username))
+            {
+                throw new KeyNotFoundException("Username Invalid.");
+            }
+            existing_user.username = user.username.ToLowerInvariant().Trim();
+            existing_user.first_name = user.first_name;
+            existing_user.last_name = user.last_name;
             await _db.SaveChangesAsync();
-            return user;
-
+            return existing_user;
         }
         public async Task DeleteUserByIdAsync(int user_id)
         {
@@ -65,7 +85,6 @@ namespace PPM.Repositories
                await _db.SaveChangesAsync();
             }
         }
-
         public bool IsValidUsername(string username)
         {
             return !string.IsNullOrEmpty(username) 

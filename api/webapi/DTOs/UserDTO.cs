@@ -8,11 +8,7 @@
         public string username { get; set; }
         public string password_hash { get; set; }
         public bool is_admin { get; set; }
-        //These two saved for later
-        /*
         public string email { get; set; } = string.Empty;
-
         public string phone_number { get; set; } = string.Empty;
-        */
     }
 }

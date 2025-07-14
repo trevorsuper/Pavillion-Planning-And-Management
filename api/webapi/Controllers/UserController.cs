@@ -36,6 +36,7 @@ namespace PPM.Controllers
             var user = await _userService.RegisterUserAsync(userDTO);
             return Ok(user);
         }
+        //[Authorize]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDTO userDTO)
         {

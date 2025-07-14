@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using PhoneNumbers;
 using PPM.Interfaces;
 using PPM.Models;
 using PPM.Models.DTOs;
 using PPM.Repositories;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -36,6 +38,7 @@ namespace PPM.Services
                 first_name = user.first_name,
                 last_name = user.last_name,
                 username = user.username,
+                email = user.email,
                 is_admin = user.is_admin,
             };
         }
@@ -46,14 +49,33 @@ namespace PPM.Services
             {
                 throw new ApplicationException("Username already exists.");
             }
+
+            bool valid_email = IsValidEmail(userDTO.email);
+            if (!valid_email)
+            {
+                throw new ApplicationException("Email is invalid.");
+            }
+
+            string normalized_phone_number = NormalizeAndValidatePhoneNumber(userDTO.phone_number);
+            if (string.IsNullOrEmpty(userDTO.password))
+            {
+                throw new ApplicationException("Password is invalid.");
+            }
             string hashed_password = BCrypt.Net.BCrypt.HashPassword(userDTO.password);
-            bool is_valid = BCrypt.Net.BCrypt.Verify(userDTO.password,hashed_password);
+            bool is_valid_password = BCrypt.Net.BCrypt.Verify(userDTO.password,hashed_password);
+            if (!is_valid_password)
+            {
+                throw new ApplicationException("Password is invalid");
+            }
+
             var user = new User
             {
                 first_name = userDTO.first_name,
                 last_name = userDTO.last_name,
                 username = userDTO.username,
                 password_hash = hashed_password,
+                email = userDTO.email,
+                phone_number = normalized_phone_number,
                 is_admin = false,
             };
 
@@ -65,6 +87,8 @@ namespace PPM.Services
                 first_name = createdUser.first_name,
                 last_name = createdUser.last_name,
                 username = createdUser.username,
+                email = createdUser.email,
+                phone_number = createdUser.phone_number,
                 is_admin = createdUser.is_admin
             };
         }
@@ -77,7 +101,10 @@ namespace PPM.Services
             }
             string stored_password_hash = user.password_hash; //Retrieves the stored_hash within the user logging in
             bool hashed_properly = BCrypt.Net.BCrypt.Verify(loginuserDTO.password, stored_password_hash); //Compares with the hash and salt in the database
-            
+            if (!hashed_properly)
+            {
+                throw new ApplicationException("Invalid Password Entered.");
+            }
             var userDTO = new UserDTO
             {
                 user_id = user.user_id,
@@ -136,6 +163,29 @@ namespace PPM.Services
             var user = await _userRepository.GetUserByIdAsync(user_id);
             await _userRepository.DeleteUserByIdAsync(user_id);
         }
+        public int? GetLoggedInUserId(int user_id)
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            if (user == null)
+            {
+                _logger.LogWarning("No Authenticated User was found");
+                return null;
+            }
+
+            var user_id_claim = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("user_id");
+            if (user_id_claim == null)
+            {
+                _logger.LogWarning("User ID Claim not found.");
+                return null;
+            }
+            bool is_parsed = int.TryParse(user_id_claim.Value, out var user_id_parsed);
+            if (is_parsed)
+            {
+                return user_id_parsed;
+            }
+            _logger.LogWarning("User ID claim value is not a valid integer: {Value}", user_id_claim.Value);
+            return null;
+        }
         /*
         //Make this private in the future and create a new function named ChangePasswordAsync();
         public async Task SetPasswordAsync(int user_id, string password)
@@ -179,28 +229,30 @@ namespace PPM.Services
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        public int? GetLoggedInUserId(int user_id)
+        private bool IsValidEmail(string email)
         {
-            var user = _httpContextAccessor.HttpContext?.User;
-            if (user == null)
+            try
             {
-                _logger.LogWarning("No Authenticated User was found");
-                return null;
+                var address = new MailAddress(email);
+                return address.Address == email;
             }
-
-            var user_id_claim = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("user_id");
-            if(user_id_claim == null)
+            catch { return false; }
+        }
+        private string NormalizeAndValidatePhoneNumber(string phone_number)
+        {
+            try
             {
-                _logger.LogWarning("User ID Claim not found.");
-                return null;
+                var phone_util = PhoneNumberUtil.GetInstance();
+                var number = phone_util.Parse(phone_number, "US");
+                bool valid_phone_number = phone_util.IsValidNumber(number);
+                if (!valid_phone_number)
+                {
+                    throw new ApplicationException("Phone Number is invalid.");
+                }
+                string phone_number_formatted = phone_util.Format(number, PhoneNumberFormat.NATIONAL);
+                return phone_number_formatted;
             }
-            bool is_parsed = int.TryParse(user_id_claim.Value, out var user_id_parsed);
-            if (is_parsed)
-            {
-                return user_id_parsed;
-            }
-            _logger.LogWarning("User ID claim value is not a valid integer: {Value}", user_id_claim.Value);
-            return null;
+            catch { throw new ApplicationException("Phone Number is invalid."); }
         }
     }
 }

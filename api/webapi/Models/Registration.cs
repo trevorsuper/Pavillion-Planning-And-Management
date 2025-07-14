@@ -21,10 +21,12 @@ namespace PPM.Models
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
         public bool is_approved { get; set; }
-
         //These last three will be for later
         /*public int waitlist {  get; set; }*/
         /*public int queue_position { get; set; }*/
-        /*public int calander { get; set; }*/
+        /*public int calendar { get; set; }*/
+        public virtual required User User { get; set; }
+        public virtual required Park Park { get; set; }
+        public virtual required Event Event {  get; set; }
     }
 }
