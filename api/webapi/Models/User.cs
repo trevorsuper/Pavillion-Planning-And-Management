@@ -17,8 +17,10 @@ namespace PPM.Models
 
         [StringLength(255)]
         public string username { get; set; } = string.Empty;
-        //These three saved for later
-        /*
+
+        [StringLength(60)]
+        public string password_hash { get; set; } = string.Empty;
+        
         [StringLength(50)]
         public string email { get; set; } = string.Empty;
 
@@ -27,7 +29,7 @@ namespace PPM.Models
 
         [StringLength(50)]
         public string phone_number { get; set; } = string.Empty;
-        */
+        
 
         public bool is_admin { get; set; }
 
