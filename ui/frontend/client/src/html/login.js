@@ -58,7 +58,7 @@ function Login() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          phone_number: formData.phoneNumber,
+          //phone_number: formData.phoneNumber,
         };
 
     try {

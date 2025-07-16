@@ -1,10 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PPM;
-using PPM.Controllers;
+﻿/*
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PPM.Models;
+using PPM.Models.Services;
 
 namespace PPM.Controllers
 {
-    public class EventController(PPMDBContext db, ILogger<ParkController> logger) : ControllerBase
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EventController(EventService eventService, ILogger<EventController> logger) : ControllerBase
     {
+       
     }
 }
+*/

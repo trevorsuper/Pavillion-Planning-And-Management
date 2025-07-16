@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PPM;
-using PPM.Controllers;
+﻿/*
+using Microsoft.AspNetCore.Mvc;
+using PPM.Models.DTOs;
+using PPM.Services;
 
 namespace PPM.Controllers
 {
-    public class RegistrationController(PPMDBContext db, ILogger<ParkController> logger) : ControllerBase
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RegistrationController(RegistrationService registrationService, ILogger<RegistrationController> logger) : ControllerBase
     {
+        private readonly RegistrationService _registrationService = registrationService;
     }
 }
+*/

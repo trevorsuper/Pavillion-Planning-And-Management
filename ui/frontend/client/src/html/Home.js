@@ -37,10 +37,10 @@ const Home = () => {
           <Link to="/login">Sign up/Login</Link>
         </nav>
         <div className="socials">
-          <img src="images/facebook-icon.png" alt="Facebook" />
-          <img src="images/twitter-icon.png" alt="Twitter" />
-          <img src="images/instagram-icon.png" alt="Instagram" />
-          <img src="images/youtube-icon.png" alt="YouTube" />
+          <a href="https://www.facebook.com/TroyMI/"><img src="images/facebook-icon.png" alt="Facebook" /></a>
+          <a href="https://x.com/CityTroyMI"><img src="images/twitter-icon.png" alt="Twitter" /></a>
+          <a href="https://www.instagram.com/troymichigan/"><img src="images/instagram-icon.png" alt="Instagram" /></a>
+          <a href="https://www.youtube.com/TroyMichiganGov"><img src="images/youtube-icon.png" alt="YouTube" /></a>
         </div>
       </header>
 

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace webapi.DTOs
+﻿namespace PPM.Models.DTOs
 {
     public class RegistrationDTO
     {
@@ -12,5 +10,8 @@ namespace webapi.DTOs
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
         public bool is_approved { get; set; }
+        public UserDTO User { get; set; }
+        public ParkDTO Park { get; set; }
+        public EventDTO Event { get; set; }
     }
 }
