@@ -65,7 +65,7 @@ function Book() {
     setErrorMessage('');
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedDate) {
       setErrorMessage('Please select a date.');
       return;
@@ -74,10 +74,39 @@ function Book() {
       setErrorMessage('Please select a time slot.');
       return;
     }
-    alert(
-      `Booking confirmed for ${selectedPark} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
-    );
-    closeBooking();
+
+    // Prepare booking payload
+    const bookingData = {
+      parkName: selectedPark,
+      date: selectedDate.toISOString(),
+      startTime: selectedSlot.start,
+      endTime: selectedSlot.end,
+    };
+
+    try {
+      const response = await fetch('http://localhost:5132/api/Booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(user?.token && { 'Authorization': `Bearer ${user.token}` }),
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        setErrorMessage(`Booking failed: ${text}`);
+        return;
+      }
+
+      // Success
+      alert(
+        `Booking confirmed for ${selectedPark} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
+      );
+      closeBooking();
+    } catch (error) {
+      setErrorMessage(`Network error: ${error.message}`);
+    }
   };
 
   return (

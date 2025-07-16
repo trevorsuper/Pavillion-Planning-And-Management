@@ -1,0 +1,2 @@
+/*Josh's connection string
+    "PPMDatabase": "data source=LAPTOP-EOT7E71B\\MSSQLSERVER02;initial catalog=PPM Users;TrustServerCertificate=True;Integrated Security=SSPI;"*/
