@@ -1,4 +1,4 @@
-﻿using PPM.Interfaces;
+﻿﻿using PPM.Interfaces;
 using PPM.Models;
 using PPM.Models.DTOs;
 
@@ -11,12 +11,18 @@ namespace PPM.Services
         {
             _parkRepository = parkRepository;
         }
+
+        public async Task<Park?> GetParkEntityByIdAsync(int park_id)
+        {
+            return await _parkRepository.GetParkByIdAsync(park_id);
+        }
+
         public async Task<ParkDTO> GetParkByIdAsync(int park_id)
         {
             var park = await _parkRepository.GetParkByIdAsync(park_id);
             if (park == null)
             {
-                throw new KeyNotFoundException($"Park with name {park_id} was not found.");
+                throw new KeyNotFoundException($"Park with ID {park_id} was not found.");
             }
             return new ParkDTO
             {
@@ -38,6 +44,7 @@ namespace PPM.Services
                 soccer_fields = park.soccer_fields,
             };
         }
+
         public async Task<ParkDTO> GetParkByNameAsync(string park_name)
         {
             var park = await _parkRepository.GetParkByNameAsync(park_name);
@@ -65,6 +72,7 @@ namespace PPM.Services
                 soccer_fields = park.soccer_fields,
             };
         }
+
         public async Task<IEnumerable<ParkDTO>> GetAllParksInfoAsync()
         {
             var parks = await _parkRepository.GetAllParksAsync();

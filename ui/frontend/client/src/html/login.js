@@ -1,4 +1,3 @@
-// login.js
 import React, { useState } from 'react';
 import '../css/login.css';
 import Header from '../components/Header';
@@ -41,12 +40,10 @@ function Login() {
     e.preventDefault();
     setErrorMessage('');
 
-    // Point to the correct controller action
     const endpoint = isLoginMode
       ? 'http://localhost:5132/api/User/Login'
       : 'http://localhost:5132/api/User/RegisterUser';
 
-    // Build payload matching your DTO
     const payload = isLoginMode
       ? {
           username: formData.username,
@@ -58,7 +55,6 @@ function Login() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          //phone_number: formData.phoneNumber,
         };
 
     try {
@@ -68,18 +64,11 @@ function Login() {
         body: JSON.stringify(payload),
       });
 
-      console.log(
-        `[${isLoginMode ? 'Login' : 'Signup'}] Response status:`,
-        response.status
-      );
+      console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Response status:`, response.status);
 
       if (!response.ok) {
-        // handle 4xx/5xx
         const text = await response.text().catch(() => '');
-        console.error(
-          `[${isLoginMode ? 'Login' : 'Signup'}] Error text:`,
-          text
-        );
+        console.error(`[${isLoginMode ? 'Login' : 'Signup'}] Error text:`, text);
 
         if ([400, 401, 409].includes(response.status)) {
           setErrorMessage('Invalid input or credentials. Please check your information.');
@@ -93,7 +82,12 @@ function Login() {
       console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Success:`, data);
 
       if (isLoginMode) {
-        login(data);
+        login({
+          user_id: data.user.user_id,
+          name: `${data.user.first_name} ${data.user.last_name}`,
+          email: data.user.email,
+          token: data.token
+        });
         alert(`Logged in as ${data.user.username}`);
       } else {
         alert('Account created successfully!');
@@ -207,3 +201,4 @@ function Login() {
 }
 
 export default Login;
+
