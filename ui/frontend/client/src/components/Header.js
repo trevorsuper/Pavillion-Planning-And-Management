@@ -1,9 +1,12 @@
 // src/components/Header.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../css/Home.css'; // Adjust this if your nav styles are elsewhere
 
 const Header = () => {
+  const { user, isAuthenticated } = useAuth();
+
   return (
     <header className="header">
       <Link to="/home">
@@ -20,6 +23,11 @@ const Header = () => {
         <Link to="/explore">Explore the Parks</Link>
         <Link to="/faq">FAQ</Link>
         <Link to="/contact">Contact us</Link>
+
+        {isAuthenticated && (
+          <Link to="/my-bookings">My Bookings</Link>
+        )}
+
         <Link to="/login">Sign up/Login</Link>
       </nav>
 

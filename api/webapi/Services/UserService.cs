@@ -1,4 +1,4 @@
-﻿using BCrypt.Net;
+﻿﻿using BCrypt.Net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +29,12 @@ namespace PPM.Services
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
         }
+
+        public async Task<User?> GetUserByIdAsync(int user_id)
+        {
+            return await _userRepository.GetUserByIdAsync(user_id);
+        }
+
         public async Task<UserDTO> GetUserDetailsAsync(int user_id)
         {
             var user = await _userRepository.GetUserByIdAsync(user_id);
@@ -42,6 +48,7 @@ namespace PPM.Services
                 is_admin = user.is_admin,
             };
         }
+
         public async Task<UserDTO> RegisterUserAsync(RegisterUserDTO userDTO)
         {
             var existing_user = await _userRepository.GetUserByUsernameAsync(userDTO.username);
@@ -62,7 +69,7 @@ namespace PPM.Services
                 throw new ApplicationException("Password is invalid.");
             }
             string hashed_password = BCrypt.Net.BCrypt.HashPassword(userDTO.password);
-            bool is_valid_password = BCrypt.Net.BCrypt.Verify(userDTO.password,hashed_password);
+            bool is_valid_password = BCrypt.Net.BCrypt.Verify(userDTO.password, hashed_password);
             if (!is_valid_password)
             {
                 throw new ApplicationException("Password is invalid");
@@ -92,6 +99,7 @@ namespace PPM.Services
                 is_admin = createdUser.is_admin
             };
         }
+
         public async Task<AuthResponseDTO?> GetUserByLoginAsync(LoginUserDTO loginuserDTO)
         {
             var user = await _userRepository.GetUserByUsernameAsync(loginuserDTO.username);
@@ -99,8 +107,8 @@ namespace PPM.Services
             {
                 throw new KeyNotFoundException($"Username Empty.");
             }
-            string stored_password_hash = user.password_hash; //Retrieves the stored_hash within the user logging in
-            bool hashed_properly = BCrypt.Net.BCrypt.Verify(loginuserDTO.password, stored_password_hash); //Compares with the hash and salt in the database
+            string stored_password_hash = user.password_hash;
+            bool hashed_properly = BCrypt.Net.BCrypt.Verify(loginuserDTO.password, stored_password_hash);
             if (!hashed_properly)
             {
                 throw new ApplicationException("Invalid Password Entered.");
@@ -120,6 +128,7 @@ namespace PPM.Services
                 User = userDTO,
             };
         }
+
         public async Task<UserDTO> UpdateUserDetailsAsync(int user_id, UpdateUserDTO userDTO)
         {
             var user = await _userRepository.GetUserByIdAsync(user_id);
@@ -133,17 +142,18 @@ namespace PPM.Services
             return new UserDTO
             {
                 user_id = user.user_id,
-                first_name=user.first_name,
-                last_name=user.last_name,
+                first_name = user.first_name,
+                last_name = user.last_name,
                 username = user.username
             };
         }
+
         public async Task<UserDTO> UpdateUserAdminDetailsAsync(int user_id, UpdateUserAdminDTO userAdminDTO)
         {
             var user = await _userRepository.GetUserByIdAsync(user_id);
 
             user.first_name = userAdminDTO.first_name;
-            user.last_name =userAdminDTO.last_name;
+            user.last_name = userAdminDTO.last_name;
             user.username = userAdminDTO.username;
             user.is_admin = userAdminDTO.is_admin;
 
@@ -158,11 +168,13 @@ namespace PPM.Services
                 is_admin = user.is_admin
             };
         }
+
         public async Task DeleteUserRecordById(int user_id)
         {
             var user = await _userRepository.GetUserByIdAsync(user_id);
             await _userRepository.DeleteUserByIdAsync(user_id);
         }
+
         public int? GetLoggedInUserId(int user_id)
         {
             var user = _httpContextAccessor.HttpContext?.User;
@@ -186,20 +198,7 @@ namespace PPM.Services
             _logger.LogWarning("User ID claim value is not a valid integer: {Value}", user_id_claim.Value);
             return null;
         }
-        /*
-        //Make this private in the future and create a new function named ChangePasswordAsync();
-        public async Task SetPasswordAsync(int user_id, string password)
-        {
-            var user = await _userRepository.GetUserByIdAsync(user_id);
-            if(user == null)
-            {
-                throw new KeyNotFoundException("User not found.");
-            }
-            string hashed_password = BCrypt.Net.BCrypt.HashPassword(password); //Hashes and Salts the password
-            user.password_hash = hashed_password; // Stores the hashed_password in the database.
-            await _userRepository.UpdateUserAsync(user);
-        }
-        */
+
         private string GenerateJwtToken(UserDTO userDTO)
         {
             var claims = new List<Claim>
@@ -207,19 +206,18 @@ namespace PPM.Services
                 new Claim(JwtRegisteredClaimNames.Sub, userDTO.user_id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, userDTO.username),
                 new Claim("is_admin", userDTO.is_admin.ToString().ToLowerInvariant()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique Token ID
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             byte[] keyBytes = new byte[32];
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                rng.GetBytes(keyBytes); //Call GetBytes() on the instance
+                rng.GetBytes(keyBytes);
             }
 
             var key = new SymmetricSecurityKey(keyBytes);
-            var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            //Creates token
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
@@ -229,6 +227,7 @@ namespace PPM.Services
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
         private bool IsValidEmail(string email)
         {
             try
@@ -238,6 +237,7 @@ namespace PPM.Services
             }
             catch { return false; }
         }
+
         private string NormalizeAndValidatePhoneNumber(string phone_number)
         {
             try

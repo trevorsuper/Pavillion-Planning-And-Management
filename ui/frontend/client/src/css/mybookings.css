@@ -1,0 +1,49 @@
+/* mybookings.css */
+
+.my-bookings-container {
+  padding: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.my-bookings-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bookings-table th,
+.bookings-table td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: left;
+}
+
+.bookings-table th {
+  background-color: #cce4f7; /* light blue like your Book page */
+  font-weight: bold;
+}
+
+.bookings-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.status-approved {
+  color: green;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: orange;
+  font-weight: bold;
+}
+
+.no-bookings-message {
+  font-size: 1.1rem;
+  color: #555;
+}
