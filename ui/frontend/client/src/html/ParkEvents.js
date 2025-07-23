@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../css/ParkEvents.css';
 import Header from '../components/Header';
+import { useAuth } from '../context/AuthContext';
 
 const events = [
   {
@@ -23,10 +24,8 @@ const events = [
   },
 ];
 
-// 🔒 Replace with actual auth logic
-const isLoggedIn = false;
-
 const ParkEvents = () => {
+  const { user, isAuthenticated } = useAuth();
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [reservationName, setReservationName] = useState('');
   const [partySize, setPartySize] = useState('');
@@ -135,7 +134,7 @@ const ParkEvents = () => {
             <h2>{selectedEvent.title}</h2>
             <p><strong>Date:</strong> {selectedEvent.date}</p>
 
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <div>
                 <p>You must be logged in to register for this event.</p>
                 {/* TODO: Replace with your actual routes */}
