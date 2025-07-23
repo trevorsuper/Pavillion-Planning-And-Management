@@ -51,10 +51,10 @@ const Home = () => {
           <Link to="/login">Sign up/Login</Link>
         </nav>
         <div className="socials">
-          <a href="https://www.facebook.com/TroyMI/"><img src="images/facebook-icon.png" alt="Facebook" /></a>
-          <a href="https://x.com/CityTroyMI"><img src="images/twitter-icon.png" alt="Twitter" /></a>
-          <a href="https://www.instagram.com/troymichigan/"><img src="images/instagram-icon.png" alt="Instagram" /></a>
-          <a href="https://www.youtube.com/TroyMichiganGov"><img src="images/youtube-icon.png" alt="YouTube" /></a>
+          <a href="https://www.facebook.com/TroyMI/" target="_blank" rel="noopener noreferrer"><img src="images/facebook-icon.png" alt="Facebook" /></a>
+          <a href="https://x.com/CityTroyMI" target="_blank" rel="noopener noreferrer"><img src="images/twitter-icon.png" alt="Twitter" /></a>
+          <a href="https://www.instagram.com/troymichigan/" target="_blank" rel="noopener noreferrer"><img src="images/instagram-icon.png" alt="Instagram" /></a>
+          <a href="https://www.youtube.com/TroyMichiganGov" target="_blank" rel="noopener noreferrer"><img src="images/youtube-icon.png" alt="YouTube" /></a>
         </div>
       </header>
 
