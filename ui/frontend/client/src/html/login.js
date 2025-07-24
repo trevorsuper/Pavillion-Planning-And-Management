@@ -43,7 +43,7 @@ function Login() {
 
     const endpoint = isLoginMode
       ? 'https://localhost:7203/api/User/Login'
-      : 'https://localhost:7203/api/User/Register';
+      : 'https://localhost:7203/api/User/RegisterUser';
 
     const payload = isLoginMode
       ? {
@@ -56,7 +56,6 @@ function Login() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          //phone_number: formData.phoneNumber,
         };
 
     try {
@@ -69,17 +68,13 @@ function Login() {
       console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Response status:`, response.status);
 
       if (!response.ok) {
-        try {
-          const text = await response.text();
-          console.error(`[${isLoginMode ? 'Login' : 'Signup'}] Error text:`, text);
-          if (response.status === 401 || response.status === 400 || response.status === 409) {
-            setErrorMessage('Invalid input or credentials. Please check your information.');
-          } else {
-            setErrorMessage('Server error. Please try again later.');
-          }
-        } catch (parseErr) {
-          console.error('Error parsing response:', parseErr);
-          setErrorMessage('Unexpected error occurred.');
+        const text = await response.text().catch(() => '');
+        console.error(`[${isLoginMode ? 'Login' : 'Signup'}] Error text:`, text);
+
+        if ([400, 401, 409].includes(response.status)) {
+          setErrorMessage('Invalid input or credentials. Please check your information.');
+        } else {
+          setErrorMessage('Server error. Please try again later.');
         }
         return;
       }
@@ -88,7 +83,12 @@ function Login() {
       console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Success:`, data);
 
       if (isLoginMode) {
-        login(data);
+        login({
+          user_id: data.user.user_id,
+          name: `${data.user.first_name} ${data.user.last_name}`,
+          email: data.user.email,
+          token: data.token
+        });
         alert(`Logged in as ${data.user.username}`);
       } else {
         alert('Account created successfully!');
@@ -109,11 +109,7 @@ function Login() {
             <h1>{isLoginMode ? 'Login to Your Account' : 'Create an Account'}</h1>
           </div>
 
-          {errorMessage && (
-            <div className="error-message">
-              {errorMessage}
-            </div>
-          )}
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
 
           <form onSubmit={handleSubmit}>
             {!isLoginMode && (

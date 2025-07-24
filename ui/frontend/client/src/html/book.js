@@ -17,7 +17,6 @@ const parkList = [
   'Jeanne M Stine Community Park',
 ];
 
-// Predefined time slots (max 8 hours)
 const timeSlots = [
   { label: 'Full Day (9 AM–5 PM)', start: '09:00', end: '17:00' },
   { label: '9 AM–12 PM', start: '09:00', end: '12:00' },
@@ -35,7 +34,7 @@ function Book() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // TODO: fetch real booked dates for the calendar
+    // Example of pre-blocked dates; replace with real data if needed
     setBookedDates([
       new Date(2025, 5, 25),
       new Date(2025, 5, 28),
@@ -65,7 +64,7 @@ function Book() {
     setErrorMessage('');
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedDate) {
       setErrorMessage('Please select a date.');
       return;
@@ -74,10 +73,54 @@ function Book() {
       setErrorMessage('Please select a time slot.');
       return;
     }
-    alert(
-      `Booking confirmed for ${selectedPark} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
-    );
-    closeBooking();
+
+    // Determine park_id and park_name
+    const park_id = parkList.indexOf(selectedPark) + 1;
+    const park_name = selectedPark;
+
+    // Build start and end timestamps
+    const startTime = new Date(selectedDate);
+    const [startHour, startMin] = selectedSlot.start.split(':').map(Number);
+    startTime.setHours(startHour, startMin, 0, 0);
+
+    const endTime = new Date(selectedDate);
+    const [endHour, endMin] = selectedSlot.end.split(':').map(Number);
+    endTime.setHours(endHour, endMin, 0, 0);
+
+    const bookingData = {
+      user_id:    user?.user_id,        
+      park_id,                         
+      requested_park: park_name,                       
+      registration_date: selectedDate, 
+      start_time:  startTime.toISOString(),
+      end_time:    endTime.toISOString()
+    };
+
+    console.log('Booking Data Being Sent:', bookingData);
+
+    try {
+      const response = await fetch('https://localhost:7203/api/Registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(user?.token && { 'Authorization': `Bearer ${user.token}` }),
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        setErrorMessage(`Booking failed: ${text}`);
+        return;
+      }
+
+      alert(
+        `Booking confirmed for ${park_name} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
+      );
+      closeBooking();
+    } catch (error) {
+      setErrorMessage(`Network error: ${error.message}`);
+    }
   };
 
   return (
@@ -121,7 +164,7 @@ function Book() {
           <DatePicker
             inline
             selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            onChange={setSelectedDate}
             excludeDates={bookedDates}
             minDate={new Date()}
           />
@@ -147,10 +190,7 @@ function Book() {
             <button onClick={closeBooking} className="btn-cancel">
               Cancel
             </button>
-            <button
-              onClick={handleConfirm}
-              className="btn-confirm"
-            >
+            <button onClick={handleConfirm} className="btn-confirm">
               Confirm Booking
             </button>
           </div>

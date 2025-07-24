@@ -11,6 +11,8 @@ import FAQ from './html/FAQ.js';
 import Book from './html/book.js';
 import Login from './html/login.js';
 import Home from './html/Home.js'; 
+import MyBookings from './html/MyBookings';
+
 
 function App() {
   const [message, setMessage] = useState('');
@@ -27,7 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/home" element={<Navigate to="/" />} />
-
+        <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/events" element={<ParkEvents />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/contact" element={<Contact />} />
