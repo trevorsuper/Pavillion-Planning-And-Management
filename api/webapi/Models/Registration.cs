@@ -14,19 +14,14 @@ namespace PPM.Models
 
         [ForeignKey("Park")]
         public int park_id { get; set; }
-
-        [ForeignKey("Event")]
-        public int event_id  { get; set; }
+        [StringLength(50)]
+        public string? requested_park {  get; set; }
         public int pavillion { get; set; }
+        public DateTime registration_date { get; set; }
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
         public bool is_approved { get; set; }
-        //These last three will be for later
-        /*public int waitlist {  get; set; }*/
-        /*public int queue_position { get; set; }*/
-        /*public int calendar { get; set; }*/
-        public virtual required User User { get; set; }
-        public virtual required Park Park { get; set; }
-        public virtual required Event Event {  get; set; }
+        public virtual User? User { get; set; }
+        public virtual Park? Park { get; set; }
     }
 }

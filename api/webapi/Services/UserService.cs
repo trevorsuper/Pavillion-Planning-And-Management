@@ -1,5 +1,6 @@
 ﻿using BCrypt.Net;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace PPM.Services
 {
@@ -163,7 +165,7 @@ namespace PPM.Services
             var user = await _userRepository.GetUserByIdAsync(user_id);
             await _userRepository.DeleteUserByIdAsync(user_id);
         }
-        public int? GetLoggedInUserId(int user_id)
+        public int? GetLoggedInUserId()
         {
             var user = _httpContextAccessor.HttpContext?.User;
             if (user == null)
@@ -172,12 +174,19 @@ namespace PPM.Services
                 return null;
             }
 
-            var user_id_claim = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("user_id");
+            var user_id_claim = user.FindFirst(ClaimTypes.NameIdentifier); 
+                                 /* user.FindFirst(ClaimTypes.NameIdentifier) ?? 
+                                 * user.FindFirst("user_id");*/
             if (user_id_claim == null)
             {
                 _logger.LogWarning("User ID Claim not found.");
                 return null;
             }
+            foreach (var claim in user.Claims)
+            {
+                _logger.LogInformation("Claim Type: {Type}, Value: {Value}", claim.Type, claim.Value);
+            }
+
             bool is_parsed = int.TryParse(user_id_claim.Value, out var user_id_parsed);
             if (is_parsed)
             {
@@ -202,6 +211,8 @@ namespace PPM.Services
         */
         private string GenerateJwtToken(UserDTO userDTO)
         {
+            _logger.LogInformation("userDTO: ID={UserId}, Username={Username}, Admin={IsAdmin}", userDTO.user_id, userDTO.username, userDTO.is_admin);
+
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userDTO.user_id.ToString()),
@@ -209,14 +220,23 @@ namespace PPM.Services
                 new Claim("is_admin", userDTO.is_admin.ToString().ToLowerInvariant()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique Token ID
             };
-
+            foreach (var claim in claims)
+            {
+                _logger.LogInformation("Claim: {Type} = {Value}", claim.Type, claim.Value);
+            }
+            /*
             byte[] keyBytes = new byte[32];
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(keyBytes); //Call GetBytes() on the instance
             }
-
-            var key = new SymmetricSecurityKey(keyBytes);
+            */
+            var secret = _configuration["Jwt:Key"];
+            if (string.IsNullOrEmpty(secret))
+            {
+                throw new ApplicationException("JWT secret key is missing from configuration.");
+            }
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
 
             //Creates token
@@ -227,6 +247,9 @@ namespace PPM.Services
                 expires: DateTime.UtcNow.AddHours(5),
                 signingCredentials: creds
             );
+            var handler = new JwtSecurityTokenHandler();
+            string jwt = handler.WriteToken(token);
+            _logger.LogInformation("Generated JWT: {Token}", jwt);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private bool IsValidEmail(string email)

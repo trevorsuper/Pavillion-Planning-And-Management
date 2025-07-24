@@ -8,10 +8,16 @@ namespace PPM.Models
     {
         [Key]
         public int event_id { get; set; }
+
         [ForeignKey("User)")]
         public int user_id { get; set; }
+
         [ForeignKey("Park")]
         public int park_id { get; set; }
+
+        [StringLength(255)]
+        [ForeignKey("Registration")]
+        public int registration_id { get; set; }
         [StringLength(255)]
         public string event_name { get; set; } = string.Empty;
         [StringLength(4000)]

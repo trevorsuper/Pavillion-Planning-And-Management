@@ -17,12 +17,12 @@ namespace webapi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("webapi.Models.Event", b =>
+            modelBuilder.Entity("PPM.Models.Event", b =>
                 {
                     b.Property<int>("event_id")
                         .ValueGeneratedOnAdd()
@@ -32,8 +32,8 @@ namespace webapi.Migrations
 
                     b.Property<string>("event_description")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<DateTime>("event_end_date")
                         .HasColumnType("datetime2");
@@ -52,12 +52,35 @@ namespace webapi.Migrations
                     b.Property<DateTime>("event_start_time")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("is_public_event")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("num_of_attendees")
+                        .HasColumnType("int");
+
+                    b.Property<int>("park_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("registration_id")
+                        .HasMaxLength(255)
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id1")
+                        .HasColumnType("int");
+
                     b.HasKey("event_id");
 
-                    b.ToTable("Events");
+                    b.HasIndex("park_id");
+
+                    b.HasIndex("user_id1");
+
+                    b.ToTable("Events", (string)null);
                 });
 
-            modelBuilder.Entity("webapi.Models.Park", b =>
+            modelBuilder.Entity("PPM.Models.Park", b =>
                 {
                     b.Property<int>("park_id")
                         .ValueGeneratedOnAdd()
@@ -83,7 +106,6 @@ namespace webapi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("geolocation")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -124,10 +146,10 @@ namespace webapi.Migrations
 
                     b.HasKey("park_id");
 
-                    b.ToTable("Parks");
+                    b.ToTable("Parks", (string)null);
                 });
 
-            modelBuilder.Entity("webapi.Models.Registration", b =>
+            modelBuilder.Entity("PPM.Models.Registration", b =>
                 {
                     b.Property<int>("registration_id")
                         .ValueGeneratedOnAdd()
@@ -138,9 +160,6 @@ namespace webapi.Migrations
                     b.Property<DateTime>("end_time")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("event_id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("is_approved")
                         .HasColumnType("bit");
 
@@ -150,10 +169,8 @@ namespace webapi.Migrations
                     b.Property<int>("pavillion")
                         .HasColumnType("int");
 
-                    b.Property<string>("requested_park")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<DateTime>("registration_date")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("start_time")
                         .HasColumnType("datetime2");
@@ -161,21 +178,27 @@ namespace webapi.Migrations
                     b.Property<int>("user_id")
                         .HasColumnType("int");
 
-                    b.Property<int>("waitlist")
-                        .HasColumnType("int");
-
                     b.HasKey("registration_id");
 
-                    b.ToTable("Registration");
+                    b.HasIndex("park_id");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("Registration", (string)null);
                 });
 
-            modelBuilder.Entity("webapi.Models.User", b =>
+            modelBuilder.Entity("PPM.Models.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("user_id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("user_id"));
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("first_name")
                         .IsRequired()
@@ -190,14 +213,69 @@ namespace webapi.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("password_hash")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("phone_number")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("username")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("user_id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("PPM.Models.Event", b =>
+                {
+                    b.HasOne("PPM.Models.Park", "Park")
+                        .WithMany()
+                        .HasForeignKey("park_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Models.User", "User")
+                        .WithMany("Events")
+                        .HasForeignKey("user_id1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Park");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PPM.Models.Registration", b =>
+                {
+                    b.HasOne("PPM.Models.Park", "Park")
+                        .WithMany()
+                        .HasForeignKey("park_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Models.User", "User")
+                        .WithMany("Registrations")
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Park");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PPM.Models.User", b =>
+                {
+                    b.Navigation("Events");
+
+                    b.Navigation("Registrations");
                 });
 #pragma warning restore 612, 618
         }
