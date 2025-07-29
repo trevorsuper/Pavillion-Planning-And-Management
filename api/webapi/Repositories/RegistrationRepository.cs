@@ -21,7 +21,7 @@ namespace PPM.Models.Repositories
             r.user_id == registration.user_id && 
             r.park_id == registration.park_id && 
             r.registration_date == registration.registration_date && 
-            r.start_time.TimeOfDay == registration.start_time.TimeOfDay);
+            r.start_time == registration.start_time);
 
             if (hasConflict)
             {

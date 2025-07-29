@@ -28,7 +28,7 @@ namespace PPM.Models
         public DateTime event_end_time { get; set; }
         public bool is_public_event { get; set; }
         public int num_of_attendees { get; set; }
-        public virtual required User User { get; set; }
-        public virtual required Park Park { get; set; }
+        public virtual required User? User { get; set; }
+        public virtual required Park? Park { get; set; }
     }
 }

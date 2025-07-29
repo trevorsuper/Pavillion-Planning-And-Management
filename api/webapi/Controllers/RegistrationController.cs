@@ -67,9 +67,15 @@ namespace PPM.Controllers
             }
         }
         [HttpGet("user/{user_id}")]
-        public async Task<ActionResult<IEnumerable<RegistrationDTO>>> GetAllUserRegistrations([FromQuery] RegistrationDTO registrationDTO)
+        public async Task<ActionResult<IEnumerable<RegistrationDTO>>> GetAllUserRegistrations(int user_id)
         {
-            var user_registrations = await _registrationService.GetAllUserRegistrationsAsync();
+            var logged_in_user_id = _userService.GetLoggedInUserId();
+            if(logged_in_user_id == null || logged_in_user_id != user_id)
+            {
+                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user {user_id}", logged_in_user_id, user_id);
+                return Unauthorized();
+            }
+            var user_registrations = await _registrationService.GetAllUserRegistrationsAsync(user_id);
             if (user_registrations == null || !user_registrations.Any())
             {
                 return NotFound();

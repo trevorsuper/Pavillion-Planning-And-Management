@@ -64,7 +64,7 @@ namespace PPM.Services
                 throw new ApplicationException("Password is invalid.");
             }
             string hashed_password = BCrypt.Net.BCrypt.HashPassword(userDTO.password);
-            bool is_valid_password = BCrypt.Net.BCrypt.Verify(userDTO.password,hashed_password);
+            bool is_valid_password = BCrypt.Net.BCrypt.Verify(userDTO.password, hashed_password);
             if (!is_valid_password)
             {
                 throw new ApplicationException("Password is invalid");
@@ -135,8 +135,8 @@ namespace PPM.Services
             return new UserDTO
             {
                 user_id = user.user_id,
-                first_name=user.first_name,
-                last_name=user.last_name,
+                first_name = user.first_name,
+                last_name = user.last_name,
                 username = user.username
             };
         }
@@ -145,7 +145,7 @@ namespace PPM.Services
             var user = await _userRepository.GetUserByIdAsync(user_id);
 
             user.first_name = userAdminDTO.first_name;
-            user.last_name =userAdminDTO.last_name;
+            user.last_name = userAdminDTO.last_name;
             user.username = userAdminDTO.username;
             user.is_admin = userAdminDTO.is_admin;
 
@@ -174,9 +174,9 @@ namespace PPM.Services
                 return null;
             }
 
-            var user_id_claim = user.FindFirst(ClaimTypes.NameIdentifier); 
-                                 /* user.FindFirst(ClaimTypes.NameIdentifier) ?? 
-                                 * user.FindFirst("user_id");*/
+            var user_id_claim = user.FindFirst(ClaimTypes.NameIdentifier);
+            /* user.FindFirst(ClaimTypes.NameIdentifier) ?? 
+            * user.FindFirst("user_id");*/
             if (user_id_claim == null)
             {
                 _logger.LogWarning("User ID Claim not found.");
@@ -237,7 +237,7 @@ namespace PPM.Services
                 throw new ApplicationException("JWT secret key is missing from configuration.");
             }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-            var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             //Creates token
             var token = new JwtSecurityToken(
@@ -247,9 +247,11 @@ namespace PPM.Services
                 expires: DateTime.UtcNow.AddHours(5),
                 signingCredentials: creds
             );
+
             var handler = new JwtSecurityTokenHandler();
             string jwt = handler.WriteToken(token);
             _logger.LogInformation("Generated JWT: {Token}", jwt);
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private bool IsValidEmail(string email)

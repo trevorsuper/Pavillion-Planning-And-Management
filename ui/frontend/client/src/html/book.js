@@ -1,5 +1,3 @@
-// Book.js
-// Run: npm install react-datepicker date-fns
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -92,8 +90,8 @@ function Book() {
       park_id,                         
       requested_park: park_name,                       
       registration_date: selectedDate, 
-      start_time:  startTime.toISOString(),
-      end_time:    endTime.toISOString()
+      start_time:  selectedSlot.start + ":00",
+      end_time:    selectedSlot.end + ":00"
     };
 
     console.log('Booking Data Being Sent:', bookingData);

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PPM;
 
@@ -11,9 +12,11 @@ using PPM;
 namespace webapi.Migrations
 {
     [DbContext(typeof(PPMDBContext))]
-    partial class PPMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250717164824_RemoveUserIdFromEvents")]
+    partial class RemoveUserIdFromEvents
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,32 +55,14 @@ namespace webapi.Migrations
                     b.Property<DateTime>("event_start_time")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("is_public_event")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("num_of_attendees")
-                        .HasColumnType("int");
-
-                    b.Property<int>("park_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("registration_id")
-                        .HasMaxLength(255)
-                        .HasColumnType("int");
-
-                    b.Property<int>("user_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("user_id1")
+                    b.Property<int?>("user_id")
                         .HasColumnType("int");
 
                     b.HasKey("event_id");
 
-                    b.HasIndex("park_id");
+                    b.HasIndex("user_id");
 
-                    b.HasIndex("user_id1");
-
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("PPM.Models.Park", b =>
@@ -146,7 +131,7 @@ namespace webapi.Migrations
 
                     b.HasKey("park_id");
 
-                    b.ToTable("Parks", (string)null);
+                    b.ToTable("Parks");
                 });
 
             modelBuilder.Entity("PPM.Models.Registration", b =>
@@ -160,6 +145,9 @@ namespace webapi.Migrations
                     b.Property<DateTime>("end_time")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("event_id")
+                        .HasColumnType("int");
+
                     b.Property<bool>("is_approved")
                         .HasColumnType("bit");
 
@@ -169,9 +157,6 @@ namespace webapi.Migrations
                     b.Property<int>("pavillion")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("registration_date")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("start_time")
                         .HasColumnType("datetime2");
 
@@ -180,11 +165,13 @@ namespace webapi.Migrations
 
                     b.HasKey("registration_id");
 
+                    b.HasIndex("event_id");
+
                     b.HasIndex("park_id");
 
                     b.HasIndex("user_id");
 
-                    b.ToTable("Registration", (string)null);
+                    b.ToTable("Registration");
                 });
 
             modelBuilder.Entity("PPM.Models.User", b =>
@@ -230,52 +217,7 @@ namespace webapi.Migrations
 
                     b.HasKey("user_id");
 
-                    b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("PPM.Models.Event", b =>
-                {
-                    b.HasOne("PPM.Models.Park", "Park")
-                        .WithMany()
-                        .HasForeignKey("park_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PPM.Models.User", "User")
-                        .WithMany("Events")
-                        .HasForeignKey("user_id1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Park");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PPM.Models.Registration", b =>
-                {
-                    b.HasOne("PPM.Models.Park", "Park")
-                        .WithMany()
-                        .HasForeignKey("park_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PPM.Models.User", "User")
-                        .WithMany("Registrations")
-                        .HasForeignKey("user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Park");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PPM.Models.User", b =>
-                {
-                    b.Navigation("Events");
-
-                    b.Navigation("Registrations");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PPM.Models.Event", b =>

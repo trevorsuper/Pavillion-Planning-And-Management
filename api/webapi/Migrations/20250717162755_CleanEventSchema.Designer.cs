@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PPM;
 
@@ -11,9 +12,11 @@ using PPM;
 namespace webapi.Migrations
 {
     [DbContext(typeof(PPMDBContext))]
-    partial class PPMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250717162755_CleanEventSchema")]
+    partial class CleanEventSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,6 @@ namespace webapi.Migrations
 
                     b.Property<DateTime>("event_start_time")
                         .HasColumnType("datetime2");
-
                     b.Property<bool>("is_public_event")
                         .HasColumnType("bit");
 
@@ -72,12 +74,11 @@ namespace webapi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("event_id");
-
                     b.HasIndex("park_id");
 
                     b.HasIndex("user_id1");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("PPM.Models.Park", b =>
@@ -146,7 +147,7 @@ namespace webapi.Migrations
 
                     b.HasKey("park_id");
 
-                    b.ToTable("Parks", (string)null);
+                    b.ToTable("Parks");
                 });
 
             modelBuilder.Entity("PPM.Models.Registration", b =>
@@ -159,7 +160,6 @@ namespace webapi.Migrations
 
                     b.Property<DateTime>("end_time")
                         .HasColumnType("datetime2");
-
                     b.Property<bool>("is_approved")
                         .HasColumnType("bit");
 
@@ -168,10 +168,8 @@ namespace webapi.Migrations
 
                     b.Property<int>("pavillion")
                         .HasColumnType("int");
-
                     b.Property<DateTime>("registration_date")
                         .HasColumnType("datetime2");
-
                     b.Property<DateTime>("start_time")
                         .HasColumnType("datetime2");
 
@@ -179,12 +177,11 @@ namespace webapi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("registration_id");
-
                     b.HasIndex("park_id");
 
                     b.HasIndex("user_id");
 
-                    b.ToTable("Registration", (string)null);
+                    b.ToTable("Registration");
                 });
 
             modelBuilder.Entity("PPM.Models.User", b =>
@@ -230,7 +227,7 @@ namespace webapi.Migrations
 
                     b.HasKey("user_id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PPM.Models.Event", b =>
@@ -265,46 +262,6 @@ namespace webapi.Migrations
                         .HasForeignKey("user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Park");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PPM.Models.User", b =>
-                {
-                    b.Navigation("Events");
-
-                    b.Navigation("Registrations");
-                });
-
-            modelBuilder.Entity("PPM.Models.Event", b =>
-                {
-                    b.HasOne("PPM.Models.User", null)
-                        .WithMany("Events")
-                        .HasForeignKey("user_id");
-                });
-
-            modelBuilder.Entity("PPM.Models.Registration", b =>
-                {
-                    b.HasOne("PPM.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("event_id");
-
-                    b.HasOne("PPM.Models.Park", "Park")
-                        .WithMany()
-                        .HasForeignKey("park_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PPM.Models.User", "User")
-                        .WithMany("Registrations")
-                        .HasForeignKey("user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
                     b.Navigation("Park");
 
                     b.Navigation("User");

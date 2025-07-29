@@ -88,7 +88,7 @@ namespace PPM.Models.Services
                     zipcode = park.zipcode,
                 }
             };
-            
+
         }
         public async Task<RegistrationDTO> GetRegistrationDetailsAsync(int registration_id)
         {
@@ -138,22 +138,22 @@ namespace PPM.Models.Services
                 }
             };
         }
-        public async Task<IEnumerable<RegistrationDTO>> GetAllUserRegistrationsAsync()
+        public async Task<IEnumerable<RegistrationDTO>> GetAllUserRegistrationsAsync(int user_id)
         {
-            var user_id = _userService.GetLoggedInUserId();
-            if (user_id == null)
+            var logged_in_user_id = _userService.GetLoggedInUserId();
+            if (logged_in_user_id == null)
             {
                 throw new ApplicationException("User is not Logged In.");
             }
-            var user = await _userRepository.GetUserByIdAsync(user_id.Value);
+            var user = await _userRepository.GetUserByIdAsync(logged_in_user_id.Value);
             if (user == null)
             {
                 throw new ApplicationException("User does not exist.");
             }
-            var registration_inquiries = await _registrationRepository.GetAllRegistrationsAsync(user_id.Value);
+            var registration_inquiries = await _registrationRepository.GetAllRegistrationsAsync(logged_in_user_id.Value);
             if(registration_inquiries == null)
             {
-                throw new ApplicationException("User has no registrations");
+                return Enumerable.Empty<RegistrationDTO>();
             }
             var registrationInquiriesDTOs = registration_inquiries.Select(registration_inquiry => new RegistrationDTO
             {

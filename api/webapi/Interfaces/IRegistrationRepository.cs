@@ -7,3 +7,4 @@
         Task<IEnumerable<Registration>> GetAllRegistrationsAsync(int user_id);
     }
 }
+

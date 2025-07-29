@@ -15,13 +15,20 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load JWT settings from config
+// JWT configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var secretKey = jwtSettings["SecretKey"];
+var secretKey = jwtSettings["Key"];
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 
 // Add services to the container.
+
+if (string.IsNullOrEmpty(secretKey))
+{
+    throw new InvalidOperationException("JWT Key is missing from configuration. Please ensure 'Jwt:Key' is defined in appsettings.json.");
+}
+
+Console.WriteLine($"JWT Secret Key Loaded: {(secretKey != null ? "[REDACTED]" : "NULL")}");
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -29,13 +36,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<PPMDBContext>(options => {
-    options.UseSqlServer(
-       builder.Configuration.GetConnectionString("PPMDatabase"));
-});
+builder.Services.AddDbContext<PPMDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PPMDatabase"))
+);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+
 builder.Services.AddScoped<IParkRepository, ParkRepository>();
 builder.Services.AddScoped<ParkService>();
 builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
@@ -44,13 +51,13 @@ builder.Services.AddScoped<RegistrationService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("http://localhost:3000", "https://localhost:3000") // Frontend URL is https:localhost:3000
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
               .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
+              .AllowAnyHeader()
+    );
 });
 
+// JWT Authentication & Authorization
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -86,28 +93,27 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter your JWT token: Bearer {token}"
+        Description = "Enter your JWT token as: Bearer {your token}"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
-  {
     {
-      new OpenApiSecurityScheme
-      {
-        Reference = new OpenApiReference
         {
-          Type = ReferenceType.SecurityScheme,
-          Id = "Bearer"
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
         }
-      },
-      Array.Empty<string>()
-    }
-  });
+    });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -123,7 +129,6 @@ app.UseCors("AllowFrontend");
 app.UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
