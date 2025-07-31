@@ -49,10 +49,6 @@ function App() {
         <Route path="/book" element={<Book />} />
         <Route path="/login" element={<Login />} />
       </Routes>
-
-      <section style={{ padding: '20px', textAlign: 'center', fontSize: '1.25rem' }}>
-        <strong>Server Message:</strong> {message}
-      </section>
     </Router>
 =======
           <Route path="/home" element={<Navigate to="/" replace />} />

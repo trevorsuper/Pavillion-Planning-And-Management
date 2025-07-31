@@ -1,20 +1,23 @@
-// ParkEvents.js
-import React from 'react';
+import React, { useState } from 'react';
 import '../css/ParkEvents.css';
 import Header from '../components/Header';
+import { useAuth } from '../context/AuthContext';
 
 const events = [
   {
+    id: 1,
     title: 'Disc Golf Tournament',
     date: 'July 15, 2025',
     spots: 25,
   },
   {
+    id: 2,
     title: 'Community Easter Egg Hunt',
     date: 'April 12, 2025',
     spots: 100,
   },
   {
+    id: 3,
     title: 'Northern Lights Show',
     date: 'December 2, 2025',
     spots: 200,
@@ -22,8 +25,6 @@ const events = [
 ];
 
 const ParkEvents = () => {
-<<<<<<< Updated upstream
-=======
   const { user, isAuthenticated } = useAuth();
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [reservationName, setReservationName] = useState('');
@@ -34,7 +35,7 @@ const ParkEvents = () => {
     setSelectedEvent(event);
 
     // Prefill form if already registered
-    const existing = userReservations.find(r => r.eventId === event.id);
+    const existing = userReservations.find((r) => r.eventId === event.id);
     if (existing) {
       setReservationName(existing.name);
       setPartySize(existing.size);
@@ -53,7 +54,7 @@ const ParkEvents = () => {
   const handleReservationSubmit = (e) => {
     e.preventDefault();
 
-    // --- Backend API call to save reservation ---
+    // --- Backend API call to save reservation (placeholder) ---
     /*
     fetch('/api/reservations', {
       method: 'POST',
@@ -62,18 +63,20 @@ const ParkEvents = () => {
         eventId: selectedEvent.id,
         name: reservationName,
         size: partySize,
-        userId: loggedInUser.id // if you have a user object
+        userId: user.user_id // if you have a user object
       })
-    }).then(res => res.json())
-      .then(data => {
+    })
+      .then((res) => res.json())
+      .then((data) => {
         // Handle success
-      }).catch(err => {
-        console.error("Error saving reservation", err);
+      })
+      .catch((err) => {
+        console.error('Error saving reservation', err);
       });
     */
 
     // Local mock update
-    const updated = [...userReservations.filter(r => r.eventId !== selectedEvent.id)];
+    const updated = [...userReservations.filter((r) => r.eventId !== selectedEvent.id)];
     updated.push({
       eventId: selectedEvent.id,
       name: reservationName,
@@ -84,60 +87,69 @@ const ParkEvents = () => {
   };
 
   const handleCancelReservation = () => {
-    // --- Backend API call to delete reservation ---
+    // --- Backend API call to delete reservation (placeholder) ---
     /*
     fetch(`/api/reservations/${selectedEvent.id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).then(() => {
-      // Handle success
-    }).catch(err => {
-      console.error("Error cancelling reservation", err);
-    });
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(() => {
+        // Handle success
+      })
+      .catch((err) => {
+        console.error('Error cancelling reservation', err);
+      });
     */
 
     // Local mock removal
-    setUserReservations(userReservations.filter(r => r.eventId !== selectedEvent.id));
+    setUserReservations(userReservations.filter((r) => r.eventId !== selectedEvent.id));
     closeModal();
   };
 
   const isRegistered = selectedEvent
-    ? userReservations.some(r => r.eventId === selectedEvent.id)
+    ? userReservations.some((r) => r.eventId === selectedEvent.id)
     : false;
 
->>>>>>> Stashed changes
   return (
     <>
       <Header />
       <div className="events-container">
         <h1 className="events-title">Upcoming Registerable Park Events</h1>
         <div className="event-list">
-          {events.map((event, idx) => (
-            <div key={idx} className="event-card">
+          {events.map((event) => (
+            <div key={event.id} className="event-card">
               <h2>{event.title}</h2>
-              <p><strong>Date:</strong> {event.date}</p>
-              <p><strong>Spots Available:</strong> {event.spots}</p>
-              <button className="register-btn">Register</button>
+              <p>
+                <strong>Date:</strong> {event.date}
+              </p>
+              <p>
+                <strong>Spots Available:</strong> {event.spots}
+              </p>
+              <button className="register-btn" onClick={() => handleRegisterClick(event)}>
+                Register
+              </button>
             </div>
           ))}
         </div>
       </div>
-<<<<<<< Updated upstream
-=======
 
       {/* Modal */}
       {selectedEvent && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>×</button>
+            <button className="modal-close" onClick={closeModal}>
+              ×
+            </button>
 
             <h2>{selectedEvent.title}</h2>
-            <p><strong>Date:</strong> {selectedEvent.date}</p>
+            <p>
+              <strong>Date:</strong> {selectedEvent.date}
+            </p>
 
             {!isAuthenticated ? (
               <div>
                 <p>You must be logged in to register for this event.</p>
-                {/* TODO: Replace with actual routes */}
+                {/* TODO: Replace with your actual routes */}
                 <a href="/login">Login</a> or <a href="/signup">Sign up</a> to continue.
               </div>
             ) : isRegistered ? (
@@ -200,9 +212,9 @@ const ParkEvents = () => {
           </div>
         </div>
       )}
->>>>>>> Stashed changes
     </>
   );
 };
 
 export default ParkEvents;
+

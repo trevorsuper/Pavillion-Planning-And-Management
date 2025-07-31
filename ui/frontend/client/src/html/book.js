@@ -24,7 +24,7 @@ const timeSlots = [
 
 function Book() {
   const [parks, setParks] = useState([]);
-  const [selectedPark, setSelectedPark] = useState(null); 
+  const [selectedPark, setSelectedPark] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -35,10 +35,7 @@ function Book() {
 
   useEffect(() => {
     // Example of pre-blocked dates; replace with real data if needed
-    setBookedDates([
-      new Date(2025, 5, 25),
-      new Date(2025, 5, 28),
-    ]);
+    setBookedDates([new Date(2025, 5, 25), new Date(2025, 5, 28)]);
   }, []);
 
   useEffect(() => {
@@ -55,15 +52,30 @@ function Book() {
         });
         if (res.ok) {
           const data = await res.json();
-          // Expecting array of objects with park_id and park_name (based on DB)
           setParks(data);
         } else {
-          console.warn('Failed to load parks, falling back to hardcoded list:', await res.text());
-          setParks(fallbackParkNames.map((name, i) => ({ park_id: i + 1, park_name: name })));
+          console.warn(
+            'Failed to load parks, falling back to hardcoded list:',
+            await res.text()
+          );
+          setParks(
+            fallbackParkNames.map((name, i) => ({
+              park_id: i + 1,
+              park_name: name,
+            }))
+          );
         }
       } catch (e) {
-        console.warn('Error loading parks, falling back to hardcoded list:', e);
-        setParks(fallbackParkNames.map((name, i) => ({ park_id: i + 1, park_name: name })));
+        console.warn(
+          'Error loading parks, falling back to hardcoded list:',
+          e
+        );
+        setParks(
+          fallbackParkNames.map((name, i) => ({
+            park_id: i + 1,
+            park_name: name,
+          }))
+        );
       } finally {
         setLoadingParks(false);
       }
@@ -110,34 +122,28 @@ function Book() {
     }
 
     const bookingData = {
-<<<<<<< Updated upstream
-      user_id:    user?.user_id,        
-      park_id,                         
-      requested_park: park_name,                       
-      registration_date: selectedDate, 
-      start_time:  startTime.toISOString(),
-      end_time:    endTime.toISOString()
-=======
       user_id: user?.user_id,
       park_id: selectedPark.park_id,
       requested_park: selectedPark.park_name,
       registration_date: selectedDate,
       start_time: selectedSlot.start + ':00',
       end_time: selectedSlot.end + ':00',
->>>>>>> Stashed changes
     };
 
     console.log('Booking Data Being Sent:', bookingData);
 
     try {
-      const response = await fetch('http://localhost:5132/api/Registration', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(user?.token && { Authorization: `Bearer ${user.token}` }),
-        },
-        body: JSON.stringify(bookingData),
-      });
+      const response = await fetch(
+        'https://localhost:7203/api/Registration',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(user?.token && { Authorization: `Bearer ${user.token}` }),
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
 
       if (!response.ok) {
         const text = await response.text();
@@ -172,7 +178,9 @@ function Book() {
             <tbody>
               {parks.map((park, i) => (
                 <tr key={i} className="bg-white hover:bg-gray-50">
-                  <td className="p-3 border font-medium">{park.park_name}</td>
+                  <td className="p-3 border font-medium">
+                    {park.park_name}
+                  </td>
                   <td className="p-3 border">
                     <button
                       className="text-blue-600 hover:underline"
@@ -189,53 +197,4 @@ function Book() {
       </div>
 
       {selectedPark && (
-        <div className="booking-popup">
-          <h2 className="text-lg font-bold mb-3">Book {selectedPark.park_name}</h2>
-
-          <p className="mb-1">
-            <strong>Name:</strong> {user?.name}
-          </p>
-          <p className="mb-4">
-            <strong>Email:</strong> {user?.email}
-          </p>
-
-          <label className="block mb-4 font-medium">Select a date:</label>
-          <DatePicker
-            inline
-            selected={selectedDate}
-            onChange={setSelectedDate}
-            excludeDates={bookedDates}
-            minDate={new Date()}
-          />
-
-          <label className="block mb-3 font-medium">Choose a time slot:</label>
-          <div className="timeslot-grid mb-4">
-            {timeSlots.map((slot) => (
-              <button
-                key={slot.label}
-                className={`timeslot-button ${selectedSlot === slot ? 'selected' : ''}`}
-                onClick={() => handleSelectSlot(slot)}
-              >
-                {slot.label}
-              </button>
-            ))}
-          </div>
-
-          {errorMessage && <div className="text-red-600 mb-3">{errorMessage}</div>}
-
-          <div className="button-row">
-            <button onClick={closeBooking} className="btn-cancel">
-              Cancel
-            </button>
-            <button onClick={handleConfirm} className="btn-confirm">
-              Confirm Booking
-            </button>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-export default Book;
 
