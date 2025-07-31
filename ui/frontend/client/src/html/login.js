@@ -37,6 +37,13 @@ function Login() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const normalizeAdmin = (val) => {
+    if (val === true) return true;
+    if (val === 'true') return true;
+    if (val === 1 || val === '1') return true;
+    return false;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -83,12 +90,15 @@ function Login() {
       console.log(`[${isLoginMode ? 'Login' : 'Signup'}] Success:`, data);
 
       if (isLoginMode) {
-        login({
+        const userObj = {
           user_id: data.user.user_id,
+          username: data.user.username,
           name: `${data.user.first_name} ${data.user.last_name}`,
           email: data.user.email,
-          token: data.token
-        });
+          is_admin: normalizeAdmin(data.user.is_admin),
+          token: data.token,
+        };
+        login(userObj);
         alert(`Logged in as ${data.user.username}`);
       } else {
         alert('Account created successfully!');
@@ -186,11 +196,7 @@ function Login() {
               <button type="submit" className="login-btn">
                 {isLoginMode ? 'Login' : 'Sign Up'}
               </button>
-              <button
-                type="button"
-                className="signup-btn"
-                onClick={toggleMode}
-              >
+              <button type="button" className="signup-btn" onClick={toggleMode}>
                 {isLoginMode ? 'Create an account' : 'Back to login'}
               </button>
             </div>
@@ -202,4 +208,3 @@ function Login() {
 }
 
 export default Login;
-

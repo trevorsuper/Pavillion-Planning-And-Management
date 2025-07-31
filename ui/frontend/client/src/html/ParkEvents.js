@@ -35,7 +35,7 @@ const ParkEvents = () => {
     setSelectedEvent(event);
 
     // Prefill form if already registered
-    const existing = userReservations.find(r => r.eventId === event.id);
+    const existing = userReservations.find((r) => r.eventId === event.id);
     if (existing) {
       setReservationName(existing.name);
       setPartySize(existing.size);
@@ -54,7 +54,7 @@ const ParkEvents = () => {
   const handleReservationSubmit = (e) => {
     e.preventDefault();
 
-    // --- ⬇️ Backend API call to save reservation ---
+    // --- Backend API call to save reservation (placeholder) ---
     /*
     fetch('/api/reservations', {
       method: 'POST',
@@ -63,18 +63,20 @@ const ParkEvents = () => {
         eventId: selectedEvent.id,
         name: reservationName,
         size: partySize,
-        userId: loggedInUser.id // if you have a user object
+        userId: user.user_id // if you have a user object
       })
-    }).then(res => res.json())
-      .then(data => {
+    })
+      .then((res) => res.json())
+      .then((data) => {
         // Handle success
-      }).catch(err => {
-        console.error("Error saving reservation", err);
+      })
+      .catch((err) => {
+        console.error('Error saving reservation', err);
       });
     */
 
     // Local mock update
-    const updated = [...userReservations.filter(r => r.eventId !== selectedEvent.id)];
+    const updated = [...userReservations.filter((r) => r.eventId !== selectedEvent.id)];
     updated.push({
       eventId: selectedEvent.id,
       name: reservationName,
@@ -85,25 +87,27 @@ const ParkEvents = () => {
   };
 
   const handleCancelReservation = () => {
-    // --- ⬇️ Backend API call to delete reservation ---
+    // --- Backend API call to delete reservation (placeholder) ---
     /*
     fetch(`/api/reservations/${selectedEvent.id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).then(() => {
-      // Handle success
-    }).catch(err => {
-      console.error("Error cancelling reservation", err);
-    });
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(() => {
+        // Handle success
+      })
+      .catch((err) => {
+        console.error('Error cancelling reservation', err);
+      });
     */
 
     // Local mock removal
-    setUserReservations(userReservations.filter(r => r.eventId !== selectedEvent.id));
+    setUserReservations(userReservations.filter((r) => r.eventId !== selectedEvent.id));
     closeModal();
   };
 
   const isRegistered = selectedEvent
-    ? userReservations.some(r => r.eventId === selectedEvent.id)
+    ? userReservations.some((r) => r.eventId === selectedEvent.id)
     : false;
 
   return (
@@ -115,8 +119,12 @@ const ParkEvents = () => {
           {events.map((event) => (
             <div key={event.id} className="event-card">
               <h2>{event.title}</h2>
-              <p><strong>Date:</strong> {event.date}</p>
-              <p><strong>Spots Available:</strong> {event.spots}</p>
+              <p>
+                <strong>Date:</strong> {event.date}
+              </p>
+              <p>
+                <strong>Spots Available:</strong> {event.spots}
+              </p>
               <button className="register-btn" onClick={() => handleRegisterClick(event)}>
                 Register
               </button>
@@ -129,10 +137,14 @@ const ParkEvents = () => {
       {selectedEvent && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>×</button>
+            <button className="modal-close" onClick={closeModal}>
+              ×
+            </button>
 
             <h2>{selectedEvent.title}</h2>
-            <p><strong>Date:</strong> {selectedEvent.date}</p>
+            <p>
+              <strong>Date:</strong> {selectedEvent.date}
+            </p>
 
             {!isAuthenticated ? (
               <div>
@@ -205,3 +217,4 @@ const ParkEvents = () => {
 };
 
 export default ParkEvents;
+
