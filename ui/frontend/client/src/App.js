@@ -38,19 +38,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-
-<<<<<<< Updated upstream
-        <Route path="/home" element={<Navigate to="/" />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
-        <Route path="/events" element={<ParkEvents />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/book" element={<Book />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Router>
-=======
           <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/events" element={<ParkEvents />} />
@@ -74,8 +61,8 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
->>>>>>> Stashed changes
   );
 }
 
 export default App;
+

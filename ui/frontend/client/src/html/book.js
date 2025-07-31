@@ -66,10 +66,7 @@ function Book() {
           );
         }
       } catch (e) {
-        console.warn(
-          'Error loading parks, falling back to hardcoded list:',
-          e
-        );
+        console.warn('Error loading parks, falling back to hardcoded list:', e);
         setParks(
           fallbackParkNames.map((name, i) => ({
             park_id: i + 1,
@@ -133,17 +130,14 @@ function Book() {
     console.log('Booking Data Being Sent:', bookingData);
 
     try {
-      const response = await fetch(
-        'https://localhost:7203/api/Registration',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(user?.token && { Authorization: `Bearer ${user.token}` }),
-          },
-          body: JSON.stringify(bookingData),
-        }
-      );
+      const response = await fetch('https://localhost:7203/api/Registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(user?.token && { Authorization: `Bearer ${user.token}` }),
+        },
+        body: JSON.stringify(bookingData),
+      });
 
       if (!response.ok) {
         const text = await response.text();
@@ -178,9 +172,7 @@ function Book() {
             <tbody>
               {parks.map((park, i) => (
                 <tr key={i} className="bg-white hover:bg-gray-50">
-                  <td className="p-3 border font-medium">
-                    {park.park_name}
-                  </td>
+                  <td className="p-3 border font-medium">{park.park_name}</td>
                   <td className="p-3 border">
                     <button
                       className="text-blue-600 hover:underline"
@@ -197,4 +189,62 @@ function Book() {
       </div>
 
       {selectedPark && (
+        <div className="booking-popup">
+          <h2 className="text-lg font-bold mb-3">
+            Book {selectedPark.park_name}
+          </h2>
 
+          <p className="mb-1">
+            <strong>Name:</strong>{' '}
+            {user?.name ||
+              `${user?.first_name || ''} ${user?.last_name || ''}`.trim()}
+          </p>
+          <p className="mb-4">
+            <strong>Email:</strong> {user?.email}
+          </p>
+
+          <label className="block mb-4 font-medium">Select a date:</label>
+          <DatePicker
+            inline
+            selected={selectedDate}
+            onChange={setSelectedDate}
+            excludeDates={bookedDates}
+            minDate={new Date()}
+          />
+
+          <label className="block mb-3 font-medium">
+            Choose a time slot:
+          </label>
+          <div className="timeslot-grid mb-4">
+            {timeSlots.map((slot) => (
+              <button
+                key={slot.label}
+                className={`timeslot-button ${
+                  selectedSlot === slot ? 'selected' : ''
+                }`}
+                onClick={() => handleSelectSlot(slot)}
+              >
+                {slot.label}
+              </button>
+            ))}
+          </div>
+
+          {errorMessage && (
+            <div className="text-red-600 mb-3">{errorMessage}</div>
+          )}
+
+          <div className="button-row">
+            <button onClick={closeBooking} className="btn-cancel">
+              Cancel
+            </button>
+            <button onClick={handleConfirm} className="btn-confirm">
+              Confirm Booking
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default Book;
