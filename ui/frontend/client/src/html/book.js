@@ -46,7 +46,7 @@ function Book() {
           'Content-Type': 'application/json',
           ...(user?.token && { Authorization: `Bearer ${user.token}` }),
         };
-        const res = await fetch('https://localhost:7203/api/Parks', {
+        const res = await fetch('https://localhost:7203/api/Park/GetAllParks', {
           method: 'GET',
           headers,
         });

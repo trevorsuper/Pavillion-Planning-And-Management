@@ -42,7 +42,7 @@ namespace PPM.Models.Repositories
             }
             return registration;
         }
-        public async Task<IEnumerable<Registration>> GetAllRegistrationsAsync(int user_id)
+        public async Task<IEnumerable<Registration>> GetAllUserRegistrationsAsync(int user_id)
         {
             var registration_inquiries = await _db.Registration.Include(r=>r.Park).Where(u => u.user_id == user_id).ToListAsync();
             if (registration_inquiries == null)
@@ -50,6 +50,42 @@ namespace PPM.Models.Repositories
                 throw new KeyNotFoundException($"No Registrations with ID {user_id} was not found.");
             }
             return registration_inquiries;
+        }
+        //Retrieves all Registration Inquiries by all Users in the database for the Admin to view
+        public async Task<IEnumerable<Registration>> GetAllAdminRegistrationsAsync()
+        {
+            var registration_inquiries = await _db.Registration.Include(r => r.User).Include(r => r.Park).ToListAsync();
+            if (registration_inquiries == null)
+            {
+                throw new KeyNotFoundException($"No Registrations were found.");
+            }
+            return registration_inquiries;
+        }
+        public async Task<IEnumerable<Registration>> GetAllUnreviewedRegistrationsAsync()
+        {
+            var unreviewed_registrations = await _db.Registration.Where(r => !r.is_reviewed).Include(r => r.User).Include(r => r.Park).ToListAsync();
+            return unreviewed_registrations;
+        }
+        public async Task<IEnumerable<Registration>> GetAllUnapprovedRegistrationsAsync()
+        {
+            var unapproved_registrations = await _db.Registration.Where(r => !r.is_approved).Include(r => r.User).Include(r => r.Park).ToListAsync();
+            return unapproved_registrations;
+        }
+        public async Task<IEnumerable<Registration>> GetAllApprovedRegistrationsAsync()
+        {
+            var approved_registrations = await _db.Registration.Where(r => r.is_approved).Include(r => r.User).Include(r => r.Park).ToListAsync();
+            return approved_registrations;
+        }
+        public async Task<Registration> UpdateRegistrationAsync(Registration registration)
+        {
+            var existing_registration = await _db.Registration.FindAsync(registration.registration_id);
+            if (existing_registration == null)
+            {
+                throw new KeyNotFoundException("Registration Does Not Exist.");
+            }
+            existing_registration.is_approved = registration.is_approved;
+            await _db.SaveChangesAsync();
+            return existing_registration;
         }
     }
 }

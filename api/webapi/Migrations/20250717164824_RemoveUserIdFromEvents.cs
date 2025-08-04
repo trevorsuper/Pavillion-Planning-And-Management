@@ -10,13 +10,19 @@ namespace webapi.Migrations
         {
             // 1) Drop the FK constraint on Events.user_id
             migrationBuilder.DropForeignKey(
-                name: "FK_Events_Users_user_id",
+                name: "FK_Events_Users",
                 table: "Events");
 
             // 2) Drop the index on Events.user_id (if one was created)
-            migrationBuilder.DropIndex(
-                name: "IX_Events_user_id",
-                table: "Events");
+            migrationBuilder.Sql(@"
+            IF EXISTS (
+                SELECT name FROM sys.indexes 
+                WHERE name = 'IX_Events_user_id' AND object_id = OBJECT_ID('[dbo].[Events]')
+            )
+            BEGIN
+                DROP INDEX [IX_Events_user_id] ON [dbo].[Events];
+            END
+            ");
 
             // 3) Finally drop the column itself
             migrationBuilder.DropColumn(

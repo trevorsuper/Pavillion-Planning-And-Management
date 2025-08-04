@@ -45,8 +45,12 @@ builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<IParkRepository, ParkRepository>();
 builder.Services.AddScoped<ParkService>();
+
 builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
 builder.Services.AddScoped<RegistrationService>();
+
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<EventService>();
 
 builder.Services.AddCors(options =>
 {

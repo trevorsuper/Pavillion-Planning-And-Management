@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PPM.Models;
 using PPM.Models.DTOs;
 using PPM.Models.Services;
 using PPM.Services;
@@ -66,22 +67,119 @@ namespace PPM.Controllers
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
-        [HttpGet("user/{user_id}")]
-        public async Task<ActionResult<IEnumerable<RegistrationDTO>>> GetAllUserRegistrations(int user_id)
+        [HttpGet("user")]
+        public async Task<ActionResult<IEnumerable<RegistrationDTO>>> GetAllUserRegistrations()
         {
             var logged_in_user_id = _userService.GetLoggedInUserId();
-            if(logged_in_user_id == null || logged_in_user_id != user_id)
+            if(logged_in_user_id == null)
             {
-                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user {user_id}", logged_in_user_id, user_id);
+                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user", logged_in_user_id);
                 return Unauthorized();
             }
-            var user_registrations = await _registrationService.GetAllUserRegistrationsAsync(user_id);
+            var user_registrations = await _registrationService.GetAllUserRegistrationsAsync();
             if (user_registrations == null || !user_registrations.Any())
             {
                 return NotFound();
             }
             return Ok(user_registrations);
         }
+        //Retrieves all Registration Inquiries by all Users in the database for the Admin to view
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<RegistrationDTO>>> GetAllAdminRegistrations()
+        {
+            var logged_in_user_id = _userService.GetLoggedInUserId();
+            if (logged_in_user_id == null)
+            {
+                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user", logged_in_user_id);
+                return Unauthorized();
+            }
+            var user = await _userService.GetUserDetailsAsync(logged_in_user_id.Value);
+            if (user == null || !user.is_admin)
+            {
+                return Forbid();
+            }
+            try
+            {
+                var registrations = await _registrationService.GetAllAdminRegistrationsAsync();
+                return Ok(registrations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpGet("unreviewed")]
+        public async Task<ActionResult<IEnumerable<RegistrationDTO>>> GetAllUnreviewedRegistrations()
+        {
+            var logged_in_user_id = _userService.GetLoggedInUserId();
+            if (logged_in_user_id == null)
+            {
+                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user", logged_in_user_id);
+                return Unauthorized();
+            }
+            var user = await _userService.GetUserDetailsAsync(logged_in_user_id.Value);
+            if (user == null || !user.is_admin)
+            {
+                return Forbid();
+            }
+            try
+            {
+                var unreviewed_registrations = await _registrationService.GetAllUnreviewedRegistrationsAsync();
+                return Ok(unreviewed_registrations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
+        [HttpPatch("{registration_id}/reject")]
+        public async Task<ActionResult<RegistrationDTO>> RejectUserRegistration(int registration_id)
+        {
+            var logged_in_user_id = _userService.GetLoggedInUserId();
+            if (logged_in_user_id == null)
+            {
+                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user", logged_in_user_id);
+                return Unauthorized();
+            }
+            var user = await _userService.GetUserDetailsAsync(logged_in_user_id.Value);
+            if (user == null || !user.is_admin)
+            {
+                return Forbid();
+            }
+            try
+            {
+                var rejection_result = await _registrationService.RejectRegistration(registration_id);
+                return Ok(rejection_result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPatch("{registration_id}/approve")]
+        public async Task<ActionResult<RegistrationDTO>> ApproveUserRegistration(int registration_id)
+        {
+            var logged_in_user_id = _userService.GetLoggedInUserId();
+            if (logged_in_user_id == null)
+            {
+                logger.LogWarning("Unauthorized access attempt by user {logged_in_user_id} to user", logged_in_user_id);
+                return Unauthorized();
+            }
+            var user = await _userService.GetUserDetailsAsync(logged_in_user_id.Value);
+            if (user == null || !user.is_admin)
+            {
+                return Forbid();
+            }
+            try
+            {
+                var approval_result = await _registrationService.ApproveRegistration(registration_id);
+                return Ok(approval_result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

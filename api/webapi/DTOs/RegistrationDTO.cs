@@ -13,6 +13,7 @@ namespace PPM.Models.DTOs
         public TimeSpan start_time { get; set; }
         public TimeSpan end_time { get; set; }
         public bool is_approved { get; set; }
+        public bool is_reviewed { get; set; }
         public UserDTO? User { get; set; }
         public ParkDTO? Park { get; set; }
     }

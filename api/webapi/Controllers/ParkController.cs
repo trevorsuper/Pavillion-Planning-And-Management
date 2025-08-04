@@ -11,6 +11,7 @@ namespace PPM.Controllers
     public class ParkController(ParkService parkService, ILogger<ParkController> logger ) : ControllerBase
     {
         private readonly ParkService _parkService = parkService;
+        private readonly ILogger _logger = logger;
         // GET: api/Park/GetAllParks
         [HttpGet("GetAllParks")]
         public async Task<ActionResult<IEnumerable<ParkDTO>>> GetAllParksAsync()

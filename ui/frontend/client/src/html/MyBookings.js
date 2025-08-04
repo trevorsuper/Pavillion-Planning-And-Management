@@ -9,7 +9,7 @@ const MyBookings = () => {
 
   useEffect(() => {
     if (user?.user_id && user?.token) {
-      fetch(`https://localhost:7203/api/Registration/user/${user.user_id}`,{
+      fetch(`https://localhost:7203/api/Registration/user`,{
         method: 'GET',
           headers: {
             'Authorization': `Bearer ${user.token}`,
@@ -63,8 +63,8 @@ const MyBookings = () => {
                   <td>
                     {b.start_time} - {b.end_time}
                   </td>
-                  <td className={b.is_approved ? 'status-approved' : 'status-pending'}>
-                    {b.is_approved ? 'Approved' : 'Pending'}
+                  <td className={b.is_reviewed ? (b.is_approved ? 'status-approved' : 'status-rejected') : 'status-pending'}>
+                    {b.is_reviewed ? (b.is_approved ? 'Approved' : 'Rejected') : 'Pending'}
                   </td>
                 </tr>
               ))}

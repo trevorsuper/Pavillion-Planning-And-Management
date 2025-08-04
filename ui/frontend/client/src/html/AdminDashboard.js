@@ -15,7 +15,7 @@ const AdminDashboard = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('https://localhost:7203/api/Registration', {
+      const res = await fetch('https://localhost:7203/api/Registration/unreviewed', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,12 +38,13 @@ const AdminDashboard = () => {
   };
 
   const toggleApproval = async (registration) => {
-    const shouldApprove = registration.is_approved !== 1; // if currently not approved, approve
+    const shouldApprove = !registration.is_approved; // if currently not approved, approve
+    const endpoint = shouldApprove ? `https://localhost:7203/api/Registration/${registration.registration_id}/approve` : `https://localhost:7203/api/Registration/${registration.registration_id}/reject`;
     try {
       const res = await fetch(
-        `https://localhost:7203/api/Registration/${registration.registration_id}/approval`,
+        endpoint,
         {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             ...authHeader,
