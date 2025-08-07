@@ -56,15 +56,36 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        var origins = new List<string>();
-        origins.Add("http://localhost:3000");
-        origins.Add("https://localhost:3000");
-
-        if (origins.Any())
+        if (builder.Environment.IsDevelopment())
         {
-            policy.WithOrigins(origins.ToArray())
+            policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
               .AllowAnyMethod()
               .AllowAnyHeader();
+        }
+        else
+        {
+            // For production, allow no origins by default (most restrictive) to avoid accidental exposure
+            // This means no cross-origin calls are allowed unless you update this later
+            // It avoids accidentally opening your API up
+            // In production, allow either:
+            // a) Your real frontend URL (if frontend hosted separately)
+            // b) Or allow no CORS if frontend served by backend (same origin)
+            // Uncomment and change below when ready to allow production frontend URL:
+            // policy.WithOrigins("https://your-production-frontend.com")
+            //       .AllowAnyMethod()
+            //       .AllowAnyHeader()
+
+            // Minimal fallback to avoid crash: disallow all cross-origin requests explicitly
+            policy.SetIsOriginAllowed(_ => false)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .DisallowCredentials();
+            /*
+            // For now, let's allow all origins — but **be cautious with this**
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+            */
         }
     });
 });
