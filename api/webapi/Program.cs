@@ -122,19 +122,23 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowFrontend");
 }
 
 app.UseDeveloperExceptionPage();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowFrontend");
+//Serve React static frontend
+app.UseDefaultFiles(); // Looks for index.html by default
+app.UseStaticFiles();  // Serves from wwwroot/
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapFallbackToFile("index.html");
 app.MapControllers();
 
 app.Run();

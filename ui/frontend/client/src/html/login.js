@@ -49,8 +49,8 @@ function Login() {
     setErrorMessage('');
 
     const endpoint = isLoginMode
-      ? 'https://localhost:7203/api/User/Login'
-      : 'https://localhost:7203/api/User/RegisterUser';
+      ? '/api/User/Login'
+      : '/api/User/RegisterUser';
 
     const payload = isLoginMode
       ? {
