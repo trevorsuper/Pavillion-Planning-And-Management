@@ -55,10 +55,18 @@ builder.Services.AddScoped<EventService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+    {
+        var origins = new List<string>();
+        origins.Add("http://localhost:3000");
+        origins.Add("https://localhost:3000");
+
+        if (origins.Any())
+        {
+            policy.WithOrigins(origins.ToArray())
               .AllowAnyMethod()
-              .AllowAnyHeader()
-    );
+              .AllowAnyHeader();
+        }
+    });
 });
 
 // JWT Authentication & Authorization
@@ -116,17 +124,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//Load Kestrel settings from config (for production TLS certs)
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Configure(context.Configuration.GetSection("Kestrel"));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors("AllowFrontend");
     app.UseDeveloperExceptionPage();
 }
-
-app.UseDeveloperExceptionPage();
 
 app.UseHttpsRedirection();
 
@@ -135,6 +146,7 @@ app.UseDefaultFiles(); // Looks for index.html by default
 app.UseStaticFiles();  // Serves from wwwroot/
 
 app.UseRouting();
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
