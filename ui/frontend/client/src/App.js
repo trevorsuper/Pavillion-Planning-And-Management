@@ -22,8 +22,9 @@ import Home from './html/Home.js';
 import MyBookings from './html/MyBookings';
 
 function App() {
-  const [message, setMessage] = useState('');
+  //const [message, setMessage] = useState('');
 
+  /*
   useEffect(() => {
     fetch('http://localhost:5000/api/hello')
       .then((res) => res.json())
@@ -32,6 +33,7 @@ function App() {
         // optional: swallow or log
       });
   }, []);
+  */
 
   return (
     <AuthProvider>
