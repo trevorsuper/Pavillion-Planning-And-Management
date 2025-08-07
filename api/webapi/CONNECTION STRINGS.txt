@@ -3,3 +3,6 @@
 
 /*Noah's Connection String
     "PPMDatabase": "Data Source=DESKTOP-FG9G5KN\\SQLEXPRESS;Initial Catalog=PPM Users;TrustServerCertificate=True;Integrated Security=SSPI;"*/
+
+/*Trevor's Connection String
+    "PPMDatabase": "Data Source=LAPTOP-3AN3EUBB\\SQLEXPRESS;Initial Catalog=PPM Users;Integrated Security=True;TrustServerCertificate=True;"*/
