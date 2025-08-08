@@ -9,6 +9,6 @@ Trevor Super - trevorsuper
 
 Noah Meduvsky - noahmeduvsky
 
-Nicholas Simmons - nicholassimmons
+Nicholas Simmons - Asianofthesouth
 
 Michael Zeleny - zeleny30
