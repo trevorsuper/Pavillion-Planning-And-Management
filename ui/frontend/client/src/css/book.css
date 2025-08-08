@@ -131,6 +131,14 @@ button.bg-blue-600:hover {
     0 4px 6px -4px rgba(0, 0, 0, 0.1);
   padding: 1.25rem;      /* increased from 1rem */
   z-index: 50;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.booking-popup h2 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
 }
 
 .booking-popup label {
@@ -209,4 +217,141 @@ button.bg-blue-600:hover {
 .timeslot-button.selected {
   border-color: #2563eb;
   background-color: #e0f2fe;
+}
+
+/* Tablet styles (768px and below) */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .p-6 {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  th,
+  td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Make booking popup take more space on tablets */
+  .booking-popup {
+    top: 4rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    max-height: 70vh;
+  }
+  
+  .timeslot-grid {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: 0.4rem;
+  }
+  
+  .timeslot-button {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile styles (480px and below) */
+@media screen and (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+  
+  .p-6 {
+    padding: 0.5rem;
+  }
+  
+  h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Mobile table adjustments */
+  table {
+    font-size: 0.85rem;
+  }
+  
+  th,
+  td {
+    padding: 0.5rem;
+  }
+  
+  /* Full screen booking popup on mobile */
+  .booking-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  .booking-popup h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Stack time slots vertically on mobile */
+  .timeslot-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .timeslot-button {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
+  /* Full width buttons on mobile */
+  .booking-popup .button-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .booking-popup .btn-cancel,
+  .booking-popup .btn-confirm {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+/* Extra small mobile (360px and below) */
+@media screen and (max-width: 360px) {
+  h1 {
+    font-size: 1.2rem;
+  }
+  
+  table {
+    font-size: 0.8rem;
+  }
+  
+  th,
+  td {
+    padding: 0.4rem;
+  }
+  
+  .booking-popup {
+    padding: 0.75rem;
+  }
+  
+  .booking-popup h2 {
+    font-size: 1.1rem;
+  }
 }
