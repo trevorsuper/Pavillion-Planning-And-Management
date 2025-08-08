@@ -5,5 +5,5 @@ Contributors:<br>
 Joshua Pagonas - joshuapagonas<br>
 Trevor Super - trevorsuper<br>
 Noah Meduvsky - noahmeduvsky<br>
-Nicholas Simmons - Asianofthesouth<br>
+Nicholas Simons - Asianofthesouth<br>
 Michael Zeleney - zeleney30<br>
