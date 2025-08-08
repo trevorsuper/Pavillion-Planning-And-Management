@@ -71,9 +71,11 @@ builder.Services.AddCors(options =>
             // a) Your real frontend URL (if frontend hosted separately)
             // b) Or allow no CORS if frontend served by backend (same origin)
             // Uncomment and change below when ready to allow production frontend URL:
-            // policy.WithOrigins("https://your-production-frontend.com")
-            //       .AllowAnyMethod()
-            //       .AllowAnyHeader()
+            /*
+            policy.WithOrigins("https://ppmparks.xyz")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+            */
 
             // Minimal fallback to avoid crash: disallow all cross-origin requests explicitly
             policy.SetIsOriginAllowed(_ => false)

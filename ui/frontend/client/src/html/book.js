@@ -46,7 +46,7 @@ function Book() {
           'Content-Type': 'application/json',
           ...(user?.token && { Authorization: `Bearer ${user.token}` }),
         };
-        const res = await fetch('https://localhost:7203/api/Park/GetAllParks', {
+        const res = await fetch('/api/Park/GetAllParks', {
           method: 'GET',
           headers,
         });
@@ -130,7 +130,7 @@ function Book() {
     console.log('Booking Data Being Sent:', bookingData);
 
     try {
-      const response = await fetch('https://localhost:7203/api/Registration', {
+      const response = await fetch('/api/Registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

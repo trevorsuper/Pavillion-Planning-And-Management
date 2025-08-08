@@ -9,7 +9,7 @@ const MyBookings = () => {
 
   useEffect(() => {
     if (user?.user_id && user?.token) {
-      fetch(`https://localhost:7203/api/Registration/user`,{
+      fetch(`/api/Registration/user`,{
         method: 'GET',
           headers: {
             'Authorization': `Bearer ${user.token}`,
