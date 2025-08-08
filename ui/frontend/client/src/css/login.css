@@ -1,7 +1,6 @@
 /* Full-page center */
 .login-container {
-  min-height: 100vh;
-  background-color: #f3f4f6; /* gray-100 */
+  padding-top: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
