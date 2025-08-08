@@ -5,7 +5,7 @@ import '../css/book.css';
 import Header from '../components/Header';
 import { useAuth } from '../context/AuthContext';
 
-const parkList = [
+const fallbackParkNames = [
   'Boulan Park',
   'Brinston Park',
   'Firefighters Park',
@@ -23,25 +23,67 @@ const timeSlots = [
 ];
 
 function Book() {
+  const [parks, setParks] = useState([]);
   const [selectedPark, setSelectedPark] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [bookedDates, setBookedDates] = useState([]);
+  const [loadingParks, setLoadingParks] = useState(true);
 
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     // Example of pre-blocked dates; replace with real data if needed
-    setBookedDates([
-      new Date(2025, 5, 25),
-      new Date(2025, 5, 28),
-    ]);
+    setBookedDates([new Date(2025, 5, 25), new Date(2025, 5, 28)]);
   }, []);
+
+  useEffect(() => {
+    const fetchParks = async () => {
+      setLoadingParks(true);
+      try {
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(user?.token && { Authorization: `Bearer ${user.token}` }),
+        };
+        const res = await fetch('/api/Park/GetAllParks', {
+          method: 'GET',
+          headers,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setParks(data);
+        } else {
+          console.warn(
+            'Failed to load parks, falling back to hardcoded list:',
+            await res.text()
+          );
+          setParks(
+            fallbackParkNames.map((name, i) => ({
+              park_id: i + 1,
+              park_name: name,
+            }))
+          );
+        }
+      } catch (e) {
+        console.warn('Error loading parks, falling back to hardcoded list:', e);
+        setParks(
+          fallbackParkNames.map((name, i) => ({
+            park_id: i + 1,
+            park_name: name,
+          }))
+        );
+      } finally {
+        setLoadingParks(false);
+      }
+    };
+
+    fetchParks();
+  }, [user?.token]);
 
   const openBooking = (park) => {
     if (!isAuthenticated) {
-      alert("You must be logged in to book a pavilion.");
+      alert('You must be logged in to book a pavilion.');
       return;
     }
     setSelectedPark(park);
@@ -63,6 +105,10 @@ function Book() {
   };
 
   const handleConfirm = async () => {
+    if (!selectedPark) {
+      setErrorMessage('Please select a park.');
+      return;
+    }
     if (!selectedDate) {
       setErrorMessage('Please select a date.');
       return;
@@ -72,36 +118,23 @@ function Book() {
       return;
     }
 
-    // Determine park_id and park_name
-    const park_id = parkList.indexOf(selectedPark) + 1;
-    const park_name = selectedPark;
-
-    // Build start and end timestamps
-    const startTime = new Date(selectedDate);
-    const [startHour, startMin] = selectedSlot.start.split(':').map(Number);
-    startTime.setHours(startHour, startMin, 0, 0);
-
-    const endTime = new Date(selectedDate);
-    const [endHour, endMin] = selectedSlot.end.split(':').map(Number);
-    endTime.setHours(endHour, endMin, 0, 0);
-
     const bookingData = {
-      user_id:    user?.user_id,        
-      park_id,                         
-      requested_park: park_name,                       
-      registration_date: selectedDate, 
-      start_time:  startTime.toISOString(),
-      end_time:    endTime.toISOString()
+      user_id: user?.user_id,
+      park_id: selectedPark.park_id,
+      requested_park: selectedPark.park_name,
+      registration_date: selectedDate,
+      start_time: selectedSlot.start + ':00',
+      end_time: selectedSlot.end + ':00',
     };
 
     console.log('Booking Data Being Sent:', bookingData);
 
     try {
-      const response = await fetch('http://localhost:5132/api/Registration', {
+      const response = await fetch('/api/Registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(user?.token && { 'Authorization': `Bearer ${user.token}` }),
+          ...(user?.token && { Authorization: `Bearer ${user.token}` }),
         },
         body: JSON.stringify(bookingData),
       });
@@ -113,7 +146,7 @@ function Book() {
       }
 
       alert(
-        `Booking confirmed for ${park_name} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
+        `Booking confirmed for ${selectedPark.park_name} on ${selectedDate.toLocaleDateString()} (${selectedSlot.label})`
       );
       closeBooking();
     } catch (error) {
@@ -126,37 +159,49 @@ function Book() {
       <Header />
       <div className="p-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Book a Pavilion</h1>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-blue-100 text-left">
-              <th className="p-3 border">Park</th>
-              <th className="p-3 border">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parkList.map((park, i) => (
-              <tr key={i} className="bg-white hover:bg-gray-50">
-                <td className="p-3 border font-medium">{park}</td>
-                <td className="p-3 border">
-                  <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => openBooking(park)}
-                  >
-                    Book now!
-                  </button>
-                </td>
+        {loadingParks ? (
+          <div>Loading parks...</div>
+        ) : (
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-blue-100 text-left">
+                <th className="p-3 border">Park</th>
+                <th className="p-3 border">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {parks.map((park, i) => (
+                <tr key={i} className="bg-white hover:bg-gray-50">
+                  <td className="p-3 border font-medium">{park.park_name}</td>
+                  <td className="p-3 border">
+                    <button
+                      className="text-blue-600 hover:underline"
+                      onClick={() => openBooking(park)}
+                    >
+                      Book now!
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {selectedPark && (
         <div className="booking-popup">
-          <h2 className="text-lg font-bold mb-3">Book {selectedPark}</h2>
+          <h2 className="text-lg font-bold mb-3">
+            Book {selectedPark.park_name}
+          </h2>
 
-          <p className="mb-1"><strong>Name:</strong> {user?.name}</p>
-          <p className="mb-4"><strong>Email:</strong> {user?.email}</p>
+          <p className="mb-1">
+            <strong>Name:</strong>{' '}
+            {user?.name ||
+              `${user?.first_name || ''} ${user?.last_name || ''}`.trim()}
+          </p>
+          <p className="mb-4">
+            <strong>Email:</strong> {user?.email}
+          </p>
 
           <label className="block mb-4 font-medium">Select a date:</label>
           <DatePicker
@@ -167,12 +212,16 @@ function Book() {
             minDate={new Date()}
           />
 
-          <label className="block mb-3 font-medium">Choose a time slot:</label>
+          <label className="block mb-3 font-medium">
+            Choose a time slot:
+          </label>
           <div className="timeslot-grid mb-4">
             {timeSlots.map((slot) => (
               <button
                 key={slot.label}
-                className={`timeslot-button ${selectedSlot === slot ? 'selected' : ''}`}
+                className={`timeslot-button ${
+                  selectedSlot === slot ? 'selected' : ''
+                }`}
                 onClick={() => handleSelectSlot(slot)}
               >
                 {slot.label}
@@ -199,4 +248,3 @@ function Book() {
 }
 
 export default Book;
-

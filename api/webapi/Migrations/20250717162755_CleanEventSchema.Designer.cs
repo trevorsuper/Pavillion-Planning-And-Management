@@ -54,13 +54,29 @@ namespace webapi.Migrations
 
                     b.Property<DateTime>("event_start_time")
                         .HasColumnType("datetime2");
+                    b.Property<bool>("is_public_event")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("user_id")
+                    b.Property<int>("num_of_attendees")
+                        .HasColumnType("int");
+
+                    b.Property<int>("park_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("registration_id")
+                        .HasMaxLength(255)
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("user_id1")
                         .HasColumnType("int");
 
                     b.HasKey("event_id");
+                    b.HasIndex("park_id");
 
-                    b.HasIndex("user_id");
+                    b.HasIndex("user_id1");
 
                     b.ToTable("Events");
                 });
@@ -144,10 +160,6 @@ namespace webapi.Migrations
 
                     b.Property<DateTime>("end_time")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("event_id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("is_approved")
                         .HasColumnType("bit");
 
@@ -156,7 +168,8 @@ namespace webapi.Migrations
 
                     b.Property<int>("pavillion")
                         .HasColumnType("int");
-
+                    b.Property<DateTime>("registration_date")
+                        .HasColumnType("datetime2");
                     b.Property<DateTime>("start_time")
                         .HasColumnType("datetime2");
 
@@ -164,9 +177,6 @@ namespace webapi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("registration_id");
-
-                    b.HasIndex("event_id");
-
                     b.HasIndex("park_id");
 
                     b.HasIndex("user_id");
@@ -222,17 +232,25 @@ namespace webapi.Migrations
 
             modelBuilder.Entity("PPM.Models.Event", b =>
                 {
-                    b.HasOne("PPM.Models.User", null)
+                    b.HasOne("PPM.Models.Park", "Park")
+                        .WithMany()
+                        .HasForeignKey("park_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PPM.Models.User", "User")
                         .WithMany("Events")
-                        .HasForeignKey("user_id");
+                        .HasForeignKey("user_id1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Park");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PPM.Models.Registration", b =>
                 {
-                    b.HasOne("PPM.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("event_id");
-
                     b.HasOne("PPM.Models.Park", "Park")
                         .WithMany()
                         .HasForeignKey("park_id")
@@ -244,9 +262,6 @@ namespace webapi.Migrations
                         .HasForeignKey("user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Event");
-
                     b.Navigation("Park");
 
                     b.Navigation("User");

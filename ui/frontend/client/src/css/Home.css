@@ -20,14 +20,44 @@ body {
 
 nav {
   display: flex;
-  gap: 30px;
+  gap: 25px;
   align-items: center;
 }
 
-nav a {
+/* Shared styling for nav links and logout button */
+nav a,
+nav button.nav-link {
   text-decoration: none;
-  color: black;
-  font-weight: bold;
+  color: #000;
+  font-weight: 700;
+  font-size: 1rem; /* slightly smaller to fit better */
+  padding: 5px 7px;
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s ease;
+}
+
+/* Hover effect */
+nav a:hover,
+nav button.nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+}
+
+/* Active page underline (applies when .active class is present) */
+nav a.active::after,
+nav button.nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 3px;
+  background-color: black;
+  border-radius: 2px;
 }
 
 .socials {
@@ -70,23 +100,16 @@ nav a {
   display: none;
 }
 
-/* Tablet and Mobile styles (768px and below) */
+/* Responsive for tablets and smaller */
 @media screen and (max-width: 768px) {
   .header {
     padding: 10px 15px;
   }
-  
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
+
   .logo {
     height: 50px;
   }
-  
+
   nav {
     display: none;
   }
@@ -98,7 +121,7 @@ nav a {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .mobile-nav {
     display: none;
     position: absolute;
@@ -110,11 +133,11 @@ nav a {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     z-index: 1000;
   }
-  
+
   .mobile-nav.active {
     display: block;
   }
-  
+
   .mobile-nav a {
     display: block;
     padding: 15px 20px;
@@ -122,11 +145,11 @@ nav a {
     color: black;
     font-weight: bold;
   }
-  
+
   .mobile-nav a:hover {
     background-color: #f5f5f5;
   }
-  
+
   .mobile-socials {
     display: flex;
     justify-content: center;
@@ -134,17 +157,18 @@ nav a {
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
   }
-  
+
   .mobile-socials img {
     width: 24px;
     height: 24px;
   }
-  
+
   .carousel-container img {
     width: 70% !important;
     height: 200px !important;
   }
 }
+
 
 @media screen and (max-width: 768px) {
   .hero .carousel-container img {

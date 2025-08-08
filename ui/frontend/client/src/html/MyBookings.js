@@ -8,9 +8,20 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
-    if (user?.user_id) {
-      fetch(`http://localhost:5132/api/Registration/user/${user.user_id}`)
-        .then((res) => res.json())
+    if (user?.user_id && user?.token) {
+      fetch(`/api/Registration/user`,{
+        method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+            'Content-Type': 'application/json'
+          }
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Request failed: ${res.status}`);
+          }
+          return res.json();
+        })
         .then((data) => setBookings(data))
         .catch((err) => console.error('Error fetching bookings:', err));
     }
@@ -50,11 +61,10 @@ const MyBookings = () => {
                   <td>{b.requested_park}</td>
                   <td>{new Date(b.registration_date).toLocaleDateString()}</td>
                   <td>
-                    {new Date(b.start_time).toLocaleTimeString()} -{' '}
-                    {new Date(b.end_time).toLocaleTimeString()}
+                    {b.start_time} - {b.end_time}
                   </td>
-                  <td className={b.is_approved ? 'status-approved' : 'status-pending'}>
-                    {b.is_approved ? 'Approved' : 'Pending'}
+                  <td className={b.is_reviewed ? (b.is_approved ? 'status-approved' : 'status-rejected') : 'status-pending'}>
+                    {b.is_reviewed ? (b.is_approved ? 'Approved' : 'Rejected') : 'Pending'}
                   </td>
                 </tr>
               ))}
@@ -67,4 +77,3 @@ const MyBookings = () => {
 };
 
 export default MyBookings;
-

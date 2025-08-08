@@ -1,31 +1,38 @@
 // src/components/Header.js
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../css/Home.css';
 
 const Header = () => {
-  const { user, isAuthenticated } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (e) {
+      console.warn('Logout error', e);
+    }
+    navigate('/home', { replace: true });
   };
 
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
+  const isAdmin = (u) => {
+    if (!u) return false;
+    if (u.is_admin === true || u.isAdmin === true) return true;
+    if (u.is_admin === 'true' || u.isAdmin === 'true') return true;
+    if (u.is_admin === 1 || u.isAdmin === 1) return true;
+    if (u.is_admin === '1' || u.isAdmin === '1') return true;
+    return false;
   };
+
+  const admin = isAdmin(user);
 
   return (
     <header className="header">
-      <div className="header-top">
-        <Link to="/home">
-          <img
-            src="images/Troy_Homepage.png"
-            alt="Troy Michigan Logo"
-            className="logo"
-          />
-        </Link>
+      <Link to="/home" className="nav-link logo-link">
+        <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
+      </Link>
 
         {/* Mobile menu toggle button */}
         <button 
@@ -39,17 +46,44 @@ const Header = () => {
 
       {/* Desktop/Tablet Navigation */}
       <nav>
-        <Link to="/book">Book Now!</Link>
-        <Link to="/events">Community Park Events</Link>
-        <Link to="/explore">Explore the Parks</Link>
-        <Link to="/faq">FAQ</Link>
-        <Link to="/contact">Contact us</Link>
+        <Link to="/book" className="nav-link">
+          Book Now!
+        </Link>
+        <Link to="/events" className="nav-link">
+          Community Park Events
+        </Link>
+        <Link to="/explore" className="nav-link">
+          Explore the Parks
+        </Link>
+        <Link to="/faq" className="nav-link">
+          FAQ
+        </Link>
+        <Link to="/contact" className="nav-link">
+          Contact us
+        </Link>
 
         {isAuthenticated && (
-          <Link to="/my-bookings">My Bookings</Link>
+          <Link to="/my-bookings" className="nav-link">
+            My Bookings
+          </Link>
         )}
 
-        <Link to="/login">Sign up/Login</Link>
+        {admin && (
+          <Link to="/admin" className="nav-link registration-requests" style={{ marginLeft: '8px' }}>
+            View Registration Requests
+          </Link>
+
+        )}
+
+        {isAuthenticated ? (
+          <button onClick={handleLogout} className="nav-link logout-button" aria-label="Logout" type="button">
+            Logout
+          </button>
+        ) : (
+          <Link to="/login" className="nav-link">
+            Sign up/Login
+          </Link>
+        )}
       </nav>
 
       <div className="socials">

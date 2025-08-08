@@ -16,6 +16,7 @@ body {
   text-align: center;
 }
 
+/* Event Cards */
 .event-list {
   display: flex;
   flex-direction: column;

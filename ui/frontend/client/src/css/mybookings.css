@@ -43,6 +43,11 @@
   font-weight: bold;
 }
 
+.status-rejected {
+  color: red;
+  font-weight: bold;
+}
+
 .no-bookings-message {
   font-size: 1.1rem;
   color: #555;

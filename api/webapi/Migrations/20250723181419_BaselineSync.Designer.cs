@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PPM;
 
@@ -11,9 +12,11 @@ using PPM;
 namespace webapi.Migrations
 {
     [DbContext(typeof(PPMDBContext))]
-    partial class PPMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250723181419_BaselineSync")]
+    partial class BaselineSync
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +33,7 @@ namespace webapi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("event_id"));
 
-                    b.Property<string>("event_desc")
+                    b.Property<string>("event_description")
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -38,8 +41,8 @@ namespace webapi.Migrations
                     b.Property<DateTime>("event_end_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("event_end_time")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("event_end_time")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("event_name")
                         .IsRequired()
@@ -49,8 +52,14 @@ namespace webapi.Migrations
                     b.Property<DateTime>("event_start_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("event_start_time")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("event_start_time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("is_public_event")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("num_of_attendees")
+                        .HasColumnType("int");
 
                     b.Property<int>("park_id")
                         .HasColumnType("int");
@@ -62,13 +71,14 @@ namespace webapi.Migrations
                     b.Property<int>("user_id")
                         .HasColumnType("int");
 
+                    b.Property<int>("user_id1")
+                        .HasColumnType("int");
+
                     b.HasKey("event_id");
 
                     b.HasIndex("park_id");
 
-                    b.HasIndex("registration_id");
-
-                    b.HasIndex("user_id");
+                    b.HasIndex("user_id1");
 
                     b.ToTable("Events");
                 });
@@ -150,30 +160,23 @@ namespace webapi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("registration_id"));
 
-                    b.Property<TimeSpan>("end_time")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("end_time")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("is_approved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("is_reviewed")
                         .HasColumnType("bit");
 
                     b.Property<int>("park_id")
                         .HasColumnType("int");
 
-                    b.Property<byte>("pavillion")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("pavillion")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("registration_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("requested_park")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<TimeSpan>("start_time")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("start_time")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("user_id")
                         .HasColumnType("int");
@@ -241,21 +244,13 @@ namespace webapi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PPM.Models.Registration", "Registration")
-                        .WithMany()
-                        .HasForeignKey("registration_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PPM.Models.User", "User")
                         .WithMany("Events")
-                        .HasForeignKey("user_id")
+                        .HasForeignKey("user_id1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Park");
-
-                    b.Navigation("Registration");
 
                     b.Navigation("User");
                 });
