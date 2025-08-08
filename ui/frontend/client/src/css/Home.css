@@ -113,11 +113,11 @@ nav button.nav-link.active::after {
   nav {
     display: none;
   }
-
+  
   .socials {
     display: none;
   }
-
+  
   .mobile-menu-toggle {
     display: block;
   }
@@ -144,15 +144,10 @@ nav button.nav-link.active::after {
     text-decoration: none;
     color: black;
     font-weight: bold;
-    border-bottom: 1px solid #eee;
   }
 
   .mobile-nav a:hover {
     background-color: #f5f5f5;
-  }
-
-  .mobile-nav a:last-child {
-    border-bottom: none;
   }
 
   .mobile-socials {
@@ -174,3 +169,10 @@ nav button.nav-link.active::after {
   }
 }
 
+
+@media screen and (max-width: 768px) {
+  .hero .carousel-container img {
+    width: 70% !important;
+    height: 200px !important;
+  }
+}
