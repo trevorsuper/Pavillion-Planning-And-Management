@@ -1,5 +1,5 @@
 // src/components/Header.js
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../css/Home.css';
@@ -7,6 +7,15 @@ import '../css/Home.css';
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
 
   const handleLogout = async () => {
     try {
@@ -30,9 +39,10 @@ const Header = () => {
 
   return (
     <header className="header">
-      <Link to="/home" className="nav-link logo-link">
-        <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
-      </Link>
+      <div className="header-top">
+        <Link to="/home" className="nav-link logo-link">
+          <img src="images/Troy_Homepage.png" alt="Troy Michigan Logo" className="logo" />
+        </Link>
 
         {/* Mobile menu toggle button */}
         <button 
@@ -72,7 +82,6 @@ const Header = () => {
           <Link to="/admin" className="nav-link registration-requests" style={{ marginLeft: '8px' }}>
             View Registration Requests
           </Link>
-
         )}
 
         {isAuthenticated ? (
@@ -113,7 +122,17 @@ const Header = () => {
           <Link to="/my-bookings" onClick={closeMobileMenu}>My Bookings</Link>
         )}
 
-        <Link to="/login" onClick={closeMobileMenu}>Sign up/Login</Link>
+        {admin && (
+          <Link to="/admin" onClick={closeMobileMenu}>View Registration Requests</Link>
+        )}
+
+        {isAuthenticated ? (
+          <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-logout-button">
+            Logout
+          </button>
+        ) : (
+          <Link to="/login" onClick={closeMobileMenu}>Sign up/Login</Link>
+        )}
         
         {/* Social media row in mobile menu */}
         <div className="mobile-socials">

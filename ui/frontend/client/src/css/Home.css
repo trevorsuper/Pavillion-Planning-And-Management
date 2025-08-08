@@ -100,10 +100,37 @@ nav button.nav-link.active::after {
   display: none;
 }
 
+/* Mobile logout button styling */
+.mobile-logout-button {
+  display: block;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-logout-button:hover {
+  background-color: #f5f5f5;
+}
+
 /* Responsive for tablets and smaller */
 @media screen and (max-width: 768px) {
   .header {
     padding: 10px 15px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
 
   .logo {
@@ -144,10 +171,15 @@ nav button.nav-link.active::after {
     text-decoration: none;
     color: black;
     font-weight: bold;
+    border-bottom: 1px solid #eee;
   }
 
   .mobile-nav a:hover {
     background-color: #f5f5f5;
+  }
+
+  .mobile-nav > a:last-of-type {
+    border-bottom: none;
   }
 
   .mobile-socials {
@@ -164,15 +196,15 @@ nav button.nav-link.active::after {
   }
 
   .carousel-container img {
-    width: 70% !important;
+    width: 95% !important;
     height: 200px !important;
   }
 }
 
-
+/* Additional specific carousel targeting for mobile */
 @media screen and (max-width: 768px) {
   .hero .carousel-container img {
-    width: 70% !important;
+    width: 95% !important;
     height: 200px !important;
   }
 }
